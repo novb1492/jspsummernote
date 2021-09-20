@@ -10,9 +10,12 @@
 	if(requestPage!=null){
 		nowPage=Integer.parseInt(requestPage);
 	}
+	System.out.print(nowPage+" 요청페이지");
    boardService boardService=new boardService();
    List<boardDto>array=boardService.selectAllByPage(nowPage,request);
    int totalPage=(int)httpSession.getAttribute("totalPage");
+   int minus=nowPage-1;
+   int plus=nowPage+1;
    %>
 <!DOCTYPE html>
 <html>
@@ -185,7 +188,7 @@
         </div>
 
         <h5 class="list-group-item-heading list-group-item-evaluate">
-            <a href="articlePage.jsp?aid=<%=b.getId() %>">
+            <a href="getArticle.jsp?aid=<%=b.getId() %>">
                 <%=b.getTitle() %>
        			</a>
         </h5>
@@ -210,17 +213,29 @@
 
 	<ul class="pagination pagination-sm">
 			<li class="prev disabled">
-				<span>
-«				</span>
+			
+			<%if(nowPage>1){
+			%>	
+			<span>
+		<a href="index.jsp?requestPage=<%=minus%>">«</a>
+		</span>
+			<%}%>
+				
+			
+				
 			</li>
 		
 			  	<li class="active">
 			  		<span><%=nowPage %>/<%=totalPage %></span>
 			  	</li>
-
+			<%if(nowPage<totalPage){
+			%>	
 			<li class="next">
-				<a href="/articles/tech-qna?offset=20&amp;max=20&amp;sort=id&amp;order=desc">»</a>
+				<a href="index.jsp?requestPage=<%=plus%>">»</a>
 			</li>
+			<%}%>
+			
+			
 		
 	</ul>
     </div>

@@ -58,11 +58,16 @@ public class boardService {
 	public List<boardDto> selectAllByPage(int nowPage,HttpServletRequest request) {
 		System.out.println("selectAllByPage");
 		int totalPage=utillService.getTotalpages(boardDao.getTotalCount(), pagesize);
-		int first=utillService.getFirst(nowPage, pagesize)-1;
-		int end=utillService.getEnd(first, pagesize)-first+1;
+		int first=0;
+		int end=0;
+		if(nowPage==1) {
+			first=0;
+		}else {
+			first=(nowPage-1)*pagesize;
+		}
+		end=first+pagesize;
 		HttpSession httpSession=request.getSession();
 		httpSession.setAttribute("totalPage", totalPage);
-		System.out.println(first+" "+end);
 		return boardDao.selectPagin(first,end);
 	}
 	public Map<String, Object> selectAritcle(int aid) {

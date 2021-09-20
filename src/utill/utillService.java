@@ -25,10 +25,4 @@ public class utillService {
         System.out.println(totalpage+" 전체 페이지");
         return totalpage;
     }
-    public static int getFirst(int page,int pagesize) {
-        return (page-1)*pagesize+1;
-    }
-    public static int getEnd(int fisrt,int pagesize) {
-        return fisrt+pagesize-1;
-    }
 }

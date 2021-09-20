@@ -43,9 +43,10 @@ public class boardDao {
 		}
 	}
 	public List<boardDto> selectPagin(int first,int end) {
-		System.out.println("selectPagin");
+		System.out.println("selectPagin"+first+" "+end );
+		
 		List<boardDto>array=new ArrayList<>();
-		String sql = "select *from ( select *from article order by aid desc) where rownum >=? and rownum <= ? ";
+		String sql = "select * from(select ROW_NUMBER() OVER (ORDER BY aid desc) num, a.* from article a order by aid desc) where num between ? and ?";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
 			ps.setInt(1, first);

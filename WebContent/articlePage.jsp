@@ -5,21 +5,11 @@
     pageEncoding="UTF-8"%>
  <%@ include file="header.jsp" %>
 <%
-String aid=(String)request.getParameter("aid");
-System.out.print(aid);
-boardService boardService=new boardService();
-Map<String,Object>map=boardService.selectAritcle(Integer.parseInt(aid));
-boardDto boardDto=new boardDto();
+
+boardDto boardDto=(boardDto)httpSession.getAttribute("dto");
 String email=(String)request.getSession().getAttribute("email");
-if((boolean)map.get("flag")){
-	boardDto=(boardDto)map.get("dto");
-}else{
 %>
-<script>
-location.href="index.jsp";
-</script>
-<%}
-%>
+
 <!DOCTYPE html>
 <html>
 <body>
@@ -140,7 +130,7 @@ location.href="index.jsp";
 	
 
     <div class="nav" role="navigation">
-        <a class="create btn btn-success btn-wide pull-right" href="/articles/tech-qna/create"><i class="fa fa-pencil"></i> 새 글 쓰기</a>
+        <a class="create btn btn-success btn-wide pull-right" href="writePage.jsp"><i class="fa fa-pencil"></i> 새 글 쓰기</a>
         <h4>Tech Q&amp;A</h4>
     </div>
 
@@ -157,7 +147,7 @@ location.href="index.jsp";
 		<div class="avatar-info">
 				<a class="nickname" href="/user/info/126561" title="novb****"><%=boardDto.getEmail() %></a>
 					<div class="activity"><span class="fa fa-flash"></span> 85</div>
-					<div class="date-created"><span class="timeago" title="2021-09-06T14:18:07"><%=boardDto.getCreated() %></span> 작성
+					<div class="date-created"><span class="timeago" title="2021-09-06T14:18:07"><%=boardDto.getCreated()%></span> 작성
 					</div>
 		</div>
 </div>
