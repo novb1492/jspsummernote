@@ -11,7 +11,8 @@
 		nowPage=Integer.parseInt(requestPage);
 	}
    boardService boardService=new boardService();
-   List<boardDto>array=boardService.selectAllByPage(nowPage);
+   List<boardDto>array=boardService.selectAllByPage(nowPage,request);
+   int totalPage=(int)httpSession.getAttribute("totalPage");
    %>
 <!DOCTYPE html>
 <html>
@@ -23,7 +24,7 @@
         <i class="fa fa-bars sidebar-header-icon"></i>
     </a>
 
-    <h1><div class="logo"><a href="/"><img src="/assets/images/okjsp_logo.png" alt="OKKY" title="OKKY"></a></div></h1>
+    <h1><div class="logo"><a href="index.jsp"><img src="/assets/images/okjsp_logo.png" alt="OKKY" title="OKKY"></a></div></h1>
 
     <ul id="search-google-icon" class="nav nav-sidebar nav-sidebar-search-wrapper">
         <li class="nav-sidebar-search"><a href="javascript://" class="link" id="search-google" data-toggle="popover" data-trigger="click" data-original-title="" title=""><i class="fa fa-search"></i></a></li>
@@ -138,10 +139,6 @@
 	            </div>
 	            <ul class="list-sort pull-left">
 	            	<li><a href="/articles/tech-qna?query=&amp;sort=id&amp;order=desc" data-sort="id" data-order="desc" class="category-sort-link active">최신순</a></li>
-	                <li><a href="/articles/tech-qna?query=&amp;sort=voteCount&amp;order=desc" data-sort="voteCount" data-order="desc" class="category-sort-link ">추천순</a></li>
-	                <li><a href="/articles/tech-qna?query=&amp;sort=noteCount&amp;order=desc" data-sort="noteCount" data-order="desc" class="category-sort-link ">댓글순</a></li>
-	                <li><a href="/articles/tech-qna?query=&amp;sort=scrapCount&amp;order=desc" data-sort="scrapCount" data-order="desc" class="category-sort-link ">스크랩순</a></li>
-	                <li><a href="/articles/tech-qna?query=&amp;sort=viewCount&amp;order=desc" data-sort="viewCount" data-order="desc" class="category-sort-link ">조회순</a></li>
 	            </ul>
 	            <input type="hidden" name="sort" id="category-sort-input" value="id">
 	            <input type="hidden" name="order" id="category-order-input" value="desc">
@@ -153,60 +150,13 @@
 	    <div class="panel panel-default">
 	        <!-- Table -->
 	        <ul class="list-group">
-    <div class="list-title-wrapper clearfix">
-        <div class="list-tag clearfix">
-            <span class="list-group-item-text article-id">#423650</span>
-	<a href="/articles/tech-qna" class="list-group-item-text item-tag label label-info"><i class="fa fa-database"></i> Tech Q&amp;A</a>
 
-		
-			<a href="/articles/tagged/OKKY" class="list-group-item-text item-tag label label-gray ">OKKY</a>
-			<a href="/articles/tagged/Q%26A" class="list-group-item-text item-tag label label-gray ">Q&amp;A</a>
-			<a href="/articles/tagged/%EC%9A%B4%EC%98%81" class="list-group-item-text item-tag label label-gray ">운영</a>
-			<a href="/articles/tagged/%EA%B4%80%EB%A6%AC" class="list-group-item-text item-tag label label-gray ">관리</a>
-        </div>
-
-        <h5 class="list-group-item-heading list-group-item-evaluate">
-            <a href="/article/423650">
-                [태그 잊지말고 달기] Q&amp;A 좋은 답글 달리는 꿀팁!
-            </a>
-        </h5>
-    </div>
-
-    <div class="list-summary-wrapper clearfix">
-            <div class="item-evaluate-wrapper pull-right clearfix">
-                <div class="item-evaluate">
-                    <div class="item-evaluate-icon">
-                        <i class="item-icon fa fa-thumbs-o-up"></i>
-                    </div>
-                    <div class="item-evaluate-count">
-                        69
-                    </div>
-                </div>
-                <div class="item-evaluate item-evaluate-has-note">
-                    <div class="item-evaluate-icon">
-                        	<i class="item-icon fa fa-exclamation-circle"></i>
-                    </div>
-                    <div class="item-evaluate-count">
-                    	26
-                    </div>
-                </div>
-            </div>
-        
-    </div>
 
     <div class="list-group-item-author clearfix">
 
 	
 	
 
-<div class="avatar clearfix avatar-list ">
-		<a href="/user/info/45597" class="avatar-photo"><img src="//www.gravatar.com/avatar/b66da5ef6099211f5db8f5f7a3b4c36b?d=identicon&amp;s=30"></a>
-		<div class="avatar-info">
-				<a class="nickname" href="/user/info/45597" title="OKKY">OKKY</a>
-					<div class="activity"><span class="fa fa-flash"></span> 2k</div>
-					<div class="date-created"><span class="timeago" title="2017-11-06T11:25:10">2017-11-06 11:25:10</span></div>
-		</div>
-</div>
     </div>
 </li>
             </ul>
@@ -235,9 +185,9 @@
         </div>
 
         <h5 class="list-group-item-heading list-group-item-evaluate">
-            <a href="/article/1054983">
+            <a href="articlePage.jsp?aid=<%=b.getId() %>">
                 <%=b.getTitle() %>
-            </a>
+       			</a>
         </h5>
     </div>
     <div class="list-group-item-author clearfix">
@@ -245,15 +195,14 @@
 <div class="avatar clearfix avatar-list ">
 		<a href="/user/info/117503" class="avatar-photo"><img src="//www.gravatar.com/avatar/c8f9b00d52ddf005bb6240d6cbb49aea?d=identicon&amp;s=30"></a>
 		<div class="avatar-info">
-				<a class="nickname" href="/user/info/117503" title="bnm"><%=b.getEmail()%></a>
+				<a class="nickname" title="bnm"><%=b.getEmail()%></a>
 					<div class="activity"><span class="fa fa-flash"></span> <%=b.getHit()%></div>
 					<div class="date-created"><span class="timeago" title="2021-09-20T12:37:37"><%=b.getCreated()%></span></div>
 		</div>
 </div>
     </div>
 </li>
-<%}
-%>
+<%}%>
 
 	    </ul>
 	</div>
@@ -265,43 +214,9 @@
 «				</span>
 			</li>
 		
-		
-			
 			  	<li class="active">
-			  		<span>1</span>
+			  		<span><%=nowPage %>/<%=totalPage %></span>
 			  	</li>
-			  	<li>
-			  		<a href="/articles/tech-qna?offset=20&amp;max=20&amp;sort=id&amp;order=desc">2</a>
-			  	</li>
-			  	<li>
-			  		<a href="/articles/tech-qna?offset=40&amp;max=20&amp;sort=id&amp;order=desc">3</a>
-			  	</li>
-			  	<li>
-			  		<a href="/articles/tech-qna?offset=60&amp;max=20&amp;sort=id&amp;order=desc">4</a>
-			  	</li>
-			  	<li>
-			  		<a href="/articles/tech-qna?offset=80&amp;max=20&amp;sort=id&amp;order=desc">5</a>
-			  	</li>
-			  	<li>
-			  		<a href="/articles/tech-qna?offset=100&amp;max=20&amp;sort=id&amp;order=desc">6</a>
-			  	</li>
-			  	<li>
-			  		<a href="/articles/tech-qna?offset=120&amp;max=20&amp;sort=id&amp;order=desc">7</a>
-			  	</li>
-			  	<li>
-			  		<a href="/articles/tech-qna?offset=140&amp;max=20&amp;sort=id&amp;order=desc">8</a>
-			  	</li>
-			  	<li>
-			  		<a href="/articles/tech-qna?offset=160&amp;max=20&amp;sort=id&amp;order=desc">9</a>
-			  	</li>
-			  	<li>
-			  		<a href="/articles/tech-qna?offset=180&amp;max=20&amp;sort=id&amp;order=desc">10</a>
-			  	</li>
-		
-				<li class="disabled"><span>...</span></li>
-				<li>
-					<a href="/articles/tech-qna?offset=185920&amp;max=20&amp;sort=id&amp;order=desc">9297</a>
-				</li>
 
 			<li class="next">
 				<a href="/articles/tech-qna?offset=20&amp;max=20&amp;sort=id&amp;order=desc">»</a>
@@ -325,32 +240,7 @@
 	               </div>
                 </div>
                 <div id="footer" class="footer" role="contentinfo">
-<div class="row">
-    <div class="col-sm-9">
-        <div style="float: left;margin-right: 10px;height:100px;">
-        	<img src="/assets/images/okky_logo_footer.png" alt="footer">
-        </div>
-        <div>
-        	<a href="/intro/about">About OKKY</a>
-            | <a href="/user/privacy" data-toggle="modal" data-target="#userPrivacy">개인정보보호</a>
-            | <a href="/intro/ad">광고문의</a>
-            | <a href="mailto:info@okky.kr">Contact</a>
-            | <a href="https://www.facebook.com/okky.sns" target="_blank">Facebook</a>
-            | <a href="https://github.com/okjsp/okky" target="_blank">Github</a>  v1.5.4
-            <hr style="margin: 8px 0;">
-            <strong>상호명</strong> : 이브레인 | <strong>대표명</strong> : 노상범 | <strong>사업자등록번호</strong> : 144-81-32887 | <strong>문의</strong> : info@okky.kr
-            <br> <strong>주소</strong> : 서울 강남구 봉은사로 303 TGL경복빌딩 502호 (06103)
-            <br> @ 2021 <a href="http://www.ebrain.kr" target="_blank">eBrain Management</a>
-        </div>
-    </div>
-    <div class="sponsor-banner col-sm-3">
-        <div class="sponsor-banner-head">Sponsored by</div>
-        <div class="sponsor-banner-images">
-          <a href="https://www.inames.co.kr" target="_blank"><img src="/assets/images/spb_inames.png" alt="아이네임즈"></a>
-          <a href="https://www.toast.com/" target="_blank"><img src="/assets/images/spb_nhncloud.png" alt="NHN Cloud"></a>
-        </div>
-    </div>
-</div>
+
                 </div>
             </div>
 <%@ include file="footer.jsp" %>

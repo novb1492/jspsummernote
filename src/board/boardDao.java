@@ -1,26 +1,24 @@
 package board;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 
 
 public class boardDao {
-	private DataSource ds;
 	private Connection conn;
-	private PreparedStatement pstmt;
 	public boardDao() {
 		try{
-			Context ct = new InitialContext();
-			ds=(DataSource)ct.lookup("java:comp/env/jdbc/orcl");
-		}
-		catch(Exception e)
+			String url = "jdbc:oracle:thin:@localhost:1521:xe";
+			String user = "kim";
+			String password = "1111";
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			conn = DriverManager.getConnection(url,user,password);
+		}catch(Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -29,8 +27,7 @@ public class boardDao {
 		
 		String sql = "INSERT INTO article VALUES(articleid.NEXTVAL,?,?,?,?,?)";
 		try {
-			Connection conn=ds.getConnection();
-			PreparedStatement ps=pstmt=conn.prepareStatement(sql);
+			PreparedStatement ps=conn.prepareStatement(sql);
 			ps.setString(1, boardDto.getTitle());
 			ps.setInt(2, boardDto.getHit());
 			ps.setString(3, boardDto.getEmail());
@@ -50,8 +47,7 @@ public class boardDao {
 		List<boardDto>array=new ArrayList<>();
 		String sql = "select *from ( select *from article order by aid desc) where rownum >=? and rownum <= ? ";
 		try {
-			Connection conn=ds.getConnection();
-			PreparedStatement ps=pstmt=conn.prepareStatement(sql);
+			PreparedStatement ps=conn.prepareStatement(sql);
 			ps.setInt(1, first);
 			ps.setInt(2,end);
 			ResultSet rs;
@@ -77,8 +73,7 @@ public class boardDao {
 		System.out.println("selectPagin");
 		String sql = "select count(*) from article";
 		try {
-			Connection conn=ds.getConnection();
-			PreparedStatement ps=pstmt=conn.prepareStatement(sql);
+			PreparedStatement ps=conn.prepareStatement(sql);
 			ResultSet rs;
 			rs = ps.executeQuery();
 			rs.next();
@@ -87,6 +82,47 @@ public class boardDao {
 			e.printStackTrace();
 			System.out.println("insert error"+e.getMessage());
 			throw new RuntimeException(e.getMessage());
+		}
+	}
+	public boardDto findByAid(int aid) {
+		System.out.println("findByAid");
+		boardDto boardDto=new boardDto();
+		String sql = "select * from article where aid=?";
+		try {
+			PreparedStatement ps=conn.prepareStatement(sql);
+			ps.setInt(1, aid);
+			ResultSet rs;
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				boardDto.setEmail(rs.getString("email"));
+				boardDto.setHit(rs.getInt("hit"));
+				boardDto.setText(rs.getString("text"));
+				boardDto.setTitle(rs.getString("title"));
+				boardDto.setId(rs.getInt("aid"));
+				boardDto.setCreated(rs.getTimestamp("created"));
+			}
+			return boardDto;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("findByAid error"+e.getMessage());
+			throw new RuntimeException("게시글 찾기에 실패했습니다");
+		}
+	}
+	public void plusHit(int aid,int plusHit) {
+		System.out.println("findByAid");
+	
+		String sql = "update article set hit=? where aid=?";
+		try {
+			PreparedStatement ps=conn.prepareStatement(sql);
+			ps.setInt(1,plusHit);
+			ps.setInt(2, aid);
+			ps.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("findByAid error"+e.getMessage());
+			throw new RuntimeException("조회수 반영 실패");
 		}
 	}
 }

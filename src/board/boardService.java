@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import utill.utillService;
 
 
@@ -51,12 +55,33 @@ public class boardService {
 		}
 		throw new RuntimeException("제목이 공백입니다");
 	}
-	public List<boardDto> selectAllByPage(int nowPage) {
+	public List<boardDto> selectAllByPage(int nowPage,HttpServletRequest request) {
 		System.out.println("selectAllByPage");
 		int totalPage=utillService.getTotalpages(boardDao.getTotalCount(), pagesize);
 		int first=utillService.getFirst(nowPage, pagesize)-1;
 		int end=utillService.getEnd(first, pagesize)-first+1;
+		HttpSession httpSession=request.getSession();
+		httpSession.setAttribute("totalPage", totalPage);
 		System.out.println(first+" "+end);
 		return boardDao.selectPagin(first,end);
+	}
+	public Map<String, Object> selectAritcle(int aid) {
+		System.out.println("selectAritcle");
+		Map<String, Object>map=new HashMap<>();
+		try {
+			boardDto boardDto=boardDao.findByAid(aid);
+			int plusHit=boardDto.getHit()+1;
+			boardDao.plusHit(aid, plusHit);
+			boardDto.setHit(plusHit);
+			map.put("flag", true);
+			map.put("dto", boardDto);
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("selectAritcle error"+e.getMessage());
+			map.put("flag",false);
+			map.put("messsage",  e.getMessage());
+			return map;
+		}
 	}
 }

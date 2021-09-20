@@ -9,6 +9,13 @@ public class boardDto {
 	 private int hit;
 	 private int id;
 	 private Timestamp created;
+	 private int totalPage;
+	public int getTotalPage() {
+		return totalPage;
+	}
+	public void setTotalPage(int totalPage) {
+		this.totalPage = totalPage;
+	}
 	public int getId() {
 		return id;
 	}
