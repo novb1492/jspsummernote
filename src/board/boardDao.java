@@ -45,13 +45,15 @@ public class boardDao {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	public List<boardDto> selectPagin(int nowPage) {
+	public List<boardDto> selectPagin(int first,int end) {
 		System.out.println("selectPagin");
 		List<boardDto>array=new ArrayList<>();
-		String sql = "select * from article order by aid desc";
+		String sql = "select *from ( select *from article order by aid desc) where rownum >=? and rownum <= ? ";
 		try {
 			Connection conn=ds.getConnection();
 			PreparedStatement ps=pstmt=conn.prepareStatement(sql);
+			ps.setInt(1, first);
+			ps.setInt(2,end);
 			ResultSet rs;
 			rs = ps.executeQuery();
 			while(rs.next()) {
@@ -71,18 +73,20 @@ public class boardDao {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	/*rivate PreparedStatement  getPreparedStatement(String sql){
-		System.out.println("getPreparedStatement");
-		try {	
-			conn=ds.getConnection();
-			System.out.println(conn+"접속완료");
-			pstmt=conn.prepareStatement(sql);
-	
-		} catch (Exception e) {
+	public int getTotalCount() {
+		System.out.println("selectPagin");
+		String sql = "select count(*) from article";
+		try {
+			Connection conn=ds.getConnection();
+			PreparedStatement ps=pstmt=conn.prepareStatement(sql);
+			ResultSet rs;
+			rs = ps.executeQuery();
+			rs.next();
+			return rs.getInt(1);
+		}catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("getPreparedStatement error"+e.getMessage());
-			throw new RuntimeException("데이터 베이스 접속 실패");
+			System.out.println("insert error"+e.getMessage());
+			throw new RuntimeException(e.getMessage());
 		}
-		return pstmt;
-	}*/
+	}
 }

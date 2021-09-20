@@ -5,8 +5,13 @@
     pageEncoding="UTF-8"%>
    <%@ include file="header.jsp" %>
    <%
+   int nowPage=1;
+   String requestPage=request.getParameter("requestPage");
+	if(requestPage!=null){
+		nowPage=Integer.parseInt(requestPage);
+	}
    boardService boardService=new boardService();
-   List<boardDto>array=boardService.selectAllByPage();
+   List<boardDto>array=boardService.selectAllByPage(nowPage);
    %>
 <!DOCTYPE html>
 <html>

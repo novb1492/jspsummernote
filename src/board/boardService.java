@@ -10,7 +10,9 @@ import utill.utillService;
 
 
 public class boardService {
-	boardDao boardDao=new boardDao();
+	private	boardDao boardDao=new boardDao();
+	private final int pagesize=10;
+	
 	public boardService() {
 		// TODO Auto-generated constructor stub
 	}
@@ -49,8 +51,12 @@ public class boardService {
 		}
 		throw new RuntimeException("제목이 공백입니다");
 	}
-	public List<boardDto> selectAllByPage() {
+	public List<boardDto> selectAllByPage(int nowPage) {
 		System.out.println("selectAllByPage");
-		return boardDao.selectPagin(1);
+		int totalPage=utillService.getTotalpages(boardDao.getTotalCount(), pagesize);
+		int first=utillService.getFirst(nowPage, pagesize)-1;
+		int end=utillService.getEnd(first, pagesize)-first+1;
+		System.out.println(first+" "+end);
+		return boardDao.selectPagin(first,end);
 	}
 }
