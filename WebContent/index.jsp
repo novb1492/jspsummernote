@@ -1,6 +1,13 @@
+<%@page import="board.boardService"%>
+<%@page import="board.boardDto"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@ include file="header.jsp" %>
+   <%@ include file="header.jsp" %>
+   <%
+   boardService boardService=new boardService();
+   List<boardDto>array=boardService.selectAllByPage();
+   %>
 <!DOCTYPE html>
 <html>
 </head>
@@ -141,10 +148,6 @@
 	    <div class="panel panel-default">
 	        <!-- Table -->
 	        <ul class="list-group">
-
-
-<li class="list-group-item list-group-item-question list-group-has-note clearfix">
-
     <div class="list-title-wrapper clearfix">
         <div class="list-tag clearfix">
             <span class="list-group-item-text article-id">#423650</span>
@@ -217,124 +220,36 @@
 	
 	<div class="panel panel-default tech-qna-panel">
 	    <ul class="list-group ">
-
-
+<%for(boardDto b:array){
+%>
 <li class="list-group-item list-group-item-question list-group-no-note clearfix">
+<div class="list-title-wrapper clearfix">
+        <div class="list-tag clearfix">
+            <span class="list-group-item-text article-id"> <%=b.getId() %></span>
+	<a href="/articles/tech-qna" class="list-group-item-text item-tag label label-info"><i class="fa fa-database"></i> Tech Q&amp;A</a>
+        </div>
 
+        <h5 class="list-group-item-heading list-group-item-evaluate">
+            <a href="/article/1054983">
+                <%=b.getTitle() %>
+            </a>
+        </h5>
+    </div>
+    <div class="list-group-item-author clearfix">
 
+<div class="avatar clearfix avatar-list ">
+		<a href="/user/info/117503" class="avatar-photo"><img src="//www.gravatar.com/avatar/c8f9b00d52ddf005bb6240d6cbb49aea?d=identicon&amp;s=30"></a>
+		<div class="avatar-info">
+				<a class="nickname" href="/user/info/117503" title="bnm"><%=b.getEmail()%></a>
+					<div class="activity"><span class="fa fa-flash"></span> <%=b.getHit()%></div>
+					<div class="date-created"><span class="timeago" title="2021-09-20T12:37:37"><%=b.getCreated()%></span></div>
+		</div>
+</div>
+    </div>
 </li>
+<%}
+%>
 
-
-<li class="list-group-item list-group-item-question list-group-has-note clearfix">
-
-   
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-no-note clearfix">
-
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-has-note clearfix">
-
-   
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-has-note clearfix">
-
-   
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-no-note clearfix">
-
-  
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-no-note clearfix">
-
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-no-note clearfix">
-
-   
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-no-note clearfix">
-
-   
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-no-note clearfix">
-
-   
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-has-note clearfix">
-
-   
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-has-note clearfix">
-
-   
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-has-note clearfix">
-
-   
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-no-note clearfix">
-
-   
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-has-note clearfix">
-
-   
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-has-note clearfix">
-
-   
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-success clearfix">
-
-    
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-has-note clearfix">
-
-    
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-success clearfix">
-
-    
-</li>
-
-
-<li class="list-group-item list-group-item-question list-group-no-note clearfix">
-
-    
-</li>
 	    </ul>
 	</div>
 	<div class="text-center">

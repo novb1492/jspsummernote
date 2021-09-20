@@ -1,13 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="header.jsp" %>
+
+<%
+String title=(String)httpSession.getAttribute("title");
+String text=(String)httpSession.getAttribute("text");
+httpSession.removeAttribute("title");
+httpSession.removeAttribute("text");
+%>
 <!DOCTYPE html>
 <html>
-<head>
-<style type="text/css">
-
-</style>
-</head>
 <body>
 <div class="main ">
 <div class="sidebar sidebar-category">
@@ -134,7 +136,7 @@
 </div>
 	   </div>
 	   <div class="panel-body">
-	   		<form action="/articles/tech-qna/save" method="post" id="article-form" class="article-form" role="form" onsubmit="return postForm()">
+	   		<form action="insertArticle.jsp" method="post" id="article-form" class="article-form" role="form" onsubmit="return postForm()">
 	           <fieldset class="form">
 	<input type="hidden" name="_csrf" value="416b65c4-81e6-4f70-832a-72d0d0443cd8">
         <div class="form-group has-feedback">
@@ -170,7 +172,7 @@ Blockchain Q&amp;A                        </option>
 	               <div class="nav" role="navigation">
 	                   <fieldset class="buttons">
 	                       <a href="/articles/tech-qna" class="btn btn-default btn-wide" onclick="return confirm('정말로 취소하시겠습니까?')">취소</a>
-	                       <input type="submit" name="create" class="create btn btn-success btn-wide pull-right" action="create" value="등록" id="create">
+	                       <input type="submit"  name="create" class="create btn btn-success btn-wide pull-right" value="등록" id="create">
 	                    </fieldset>
 	                </div>
 	            </fieldset>
@@ -209,7 +211,7 @@ $('#summernote').summernote({
 				placeholder: '최대 2048자까지 쓸 수 있습니다',	//placeholder 설정
 				callbacks: {	//여기 부분이 이미지를 첨부하는 부분
 					onImageUpload : function(files) {
-                        for (var i = files.length - 1; i >= 0; i--) {
+                        for (var i = files.length - 1; i >= 0; i--) {///서버에서 직접 리턴받는 형식이 아니여서 그런가 for를 돌려도 마지막 사진만 썸네일이 나오네요
                             uploadSummernoteImageFile(files[i],this);
             		    }
 					},
@@ -228,6 +230,7 @@ $('#summernote').summernote({
         requestUrl='saveimage.jsp';
 		var data = new FormData();
 		data.append("file", file);
+		
          $.ajax({
             data : data,
             type : "POST",
@@ -243,7 +246,15 @@ $('#summernote').summernote({
         });
       
 	}
-   
+  
+<%if(title!=null){
+%>
+document.getElementById('title').value="<%=title%>";
+$('#summernote').summernote('code',"<%=text%>");
+
+<%}
+	%>
+
     </script>
 </body>
 </html>

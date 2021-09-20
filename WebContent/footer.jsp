@@ -32,7 +32,8 @@
     </div>
 </div>
                 </div>
-            </div>
+          </div>
+          <script type="text/javascript" src="http://localhost:8085/make/static/js/jslib.js"></script>
    
 </body>
 </html>
