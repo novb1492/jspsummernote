@@ -10,7 +10,9 @@
     pageEncoding="UTF-8"%>
 <%
 System.out.print("saveimagepage");
-String uploadPath = "C:/java_folder/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/webapps/img/";
+//String uploadPath = "C:/java_folder/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/webapps/img/";
+//톰캣에 make/img/로 접금하는 경로는 이폴더로 오게 했습니다
+String uploadPath = "C:/java_folder/make/WebContent/static/image";
 int size = 10 * 1024 * 1024;
 String fileName = "";
 try{
