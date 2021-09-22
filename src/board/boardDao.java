@@ -126,4 +126,22 @@ public class boardDao {
 			throw new RuntimeException("조회수 반영 실패");
 		}
 	}
+public void update(boardDto boardDto) {
+		
+		String sql = "update article set title=?,text=?,created=? where aid=?";
+		try {
+			PreparedStatement ps=conn.prepareStatement(sql);
+			ps.setString(1, boardDto.getTitle());
+			ps.setString(2, boardDto.getText());
+			ps.setTimestamp(3, boardDto.getCreated());
+			ps.setInt(4, boardDto.getId());
+		
+			ps.executeUpdate();
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("insert error"+e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+	}
 }

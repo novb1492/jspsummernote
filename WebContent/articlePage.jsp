@@ -186,21 +186,21 @@ String email=(String)request.getSession().getAttribute("email");
                 </div>
 
                 <div class="dropdown">
-                	<form action="/article/delete/1043629" method="post" name="article-delete-form" id="article-delete-form">
-							<input type="hidden" name="_csrf" value="d6901329-40ab-4284-80fa-9068a185e77c">
-               			<input type="hidden" name="_method" value="DELETE" id="_method">
+              
                         <div class="dropdown">
-                            <a href="javascript://" data-toggle="dropdown"><i class="fa fa-cog" data-toggle="tooltip" data-placement="left" title="" data-original-title="게시물 설정"></i></a>
-                            <ul class="dropdown-menu" role="menu">
-                            <%if(boardDto.getEmail().equals(email)){
+              
+                              <%if(boardDto.getEmail().equals(email)){
                             	%>
-                            	<li><a href="/article/edit/1043629" class="edit"><i class="fa fa-edit fa-fw"></i> 수정 </a></li>
-                                    <li><a href="javascript://" id="article-delete-btn"><i class="fa fa-trash-o fa-fw"></i> 삭제 </a></li>   
-                            <% }%>
+           
+                      
+                            	<a href="beforeGotoWritePage.jsp" class="edit"><i class="fa fa-edit fa-fw"></i> 수정 </a>
+                                  <a href="javascript://" id="article-delete-btn"><i class="fa fa-trash-o fa-fw"></i> 삭제 </a>  
+                           
                                 
-                            </ul>
+                           
+                             <% }%>
                         </div>
-                    </form>
+                    
                 </div>
             </div>
         </div>

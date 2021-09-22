@@ -1,3 +1,4 @@
+<%@page import="board.boardDto"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="header.jsp" %>
@@ -5,8 +6,17 @@
 <%
 String title=(String)httpSession.getAttribute("title");
 String text=(String)httpSession.getAttribute("text");
+String email=(String)httpSession.getAttribute("email");
+String aid=(String)httpSession.getAttribute("aid");
+String url="insertArticle.jsp";
 httpSession.removeAttribute("title");
 httpSession.removeAttribute("text");
+httpSession.removeAttribute("aid");
+int intAid=0;
+if(aid!=null){
+	intAid=Integer.parseInt(aid);
+	url="updateArticle.jsp";
+}
 %>
 <!DOCTYPE html>
 <html>
@@ -130,24 +140,23 @@ httpSession.removeAttribute("text");
 <div class="avatar clearfix avatar-medium pull-left">
 		<a href="/user/info/126561" class="avatar-photo"><img src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"></a>
 		<div class="avatar-info">
-				<a class="nickname" href="/user/info/126561" title="novb****">novb****</a>
-					<div class="activity block"><span class="fa fa-flash"></span> 85</div>
+				<a class="nickname" href="/user/info/126561" title="novb****"><%=email %></a>
+					
 		</div>
 </div>
 	   </div>
 	   <div class="panel-body">
-	   		<form action="insertArticle.jsp" method="post" id="article-form" class="article-form" role="form" onsubmit="return postForm()">
+	   		<form action=<%=url %> method="post" id="article-form" class="article-form" role="form" onsubmit="return postForm()">
 	           <fieldset class="form">
-	<input type="hidden" name="_csrf" value="416b65c4-81e6-4f70-832a-72d0d0443cd8">
+	     <%
+	     if(aid!=null){
+	    	 %>
+	    	 <input type="hidden" name="aid" value=<%=aid %>>
+	     <%}
+	     %>
+		
         <div class="form-group has-feedback">
             <div>
-                <select id="category" name="categoryCode" class="form-control" required="">
-                    <option value="">게시판을 선택해 주세요.</option>
-                        <option value="tech-qna" selected="selected" data-external="false" data-anonymity="false">
-Tech Q&amp;A                        </option>
-                        <option value="blockchain-qna" data-external="false" data-anonymity="false">
-Blockchain Q&amp;A                        </option>
-                </select>
             </div>
         </div>
 
@@ -157,11 +166,7 @@ Blockchain Q&amp;A                        </option>
     </div>
 </div>
 
-<div class="form-group has-feedback">
-    <div>
-    	<input type="text" name="tagString" value="" placeholder="Tags," class="form-control" id="tagString" style="display: none;"><div class="bootstrap-tagsinput"><span class="twitter-typeahead" style="position: relative; display: inline-block;"><input type="text" class="tt-hint" readonly="" autocomplete="off" spellcheck="false" tabindex="-1" dir="ltr" style="position: absolute; top: 0px; left: 0px; border-color: transparent; box-shadow: none; opacity: 1; background: none 0% 0% / auto repeat scroll padding-box border-box rgba(0, 0, 0, 0);"><input type="text" placeholder="Tags," class="tt-input" autocomplete="off" spellcheck="false" dir="auto" style="position: relative; vertical-align: top; background-color: transparent;"><pre aria-hidden="true" style="position: absolute; visibility: hidden; white-space: pre; font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, &quot;Apple SD Gothic Neo&quot;, &quot;Malgun Gothic&quot;, Dotdum; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: auto; text-transform: none;"></pre><div class="tt-menu" style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none;"><div class="tt-dataset tt-dataset-0"></div></div></span></div>
-    </div>
-</div>
+
 
 <div class="form-group has-feedback">
    		<textarea name="text" id="summernote" rows="20" class="form-control input-block-level" style="display: none;">
