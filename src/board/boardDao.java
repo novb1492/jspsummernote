@@ -122,7 +122,7 @@ public class boardDao {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("findByAid error"+e.getMessage());
+			System.out.println("plusHit error"+e.getMessage());
 			throw new RuntimeException("조회수 반영 실패");
 		}
 	}
@@ -140,7 +140,7 @@ public class boardDao {
 			
 		}catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("insert error"+e.getMessage());
+			System.out.println("update error"+e.getMessage());
 			throw new RuntimeException("글 테이블 수정 실패");
 		}
 	}
@@ -155,7 +155,7 @@ public class boardDao {
 			
 		}catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("insert error"+e.getMessage());
+			System.out.println("deleteByAid error"+e.getMessage());
 			throw new RuntimeException("글 테이블 삭제 실패");
 		}
 	}
