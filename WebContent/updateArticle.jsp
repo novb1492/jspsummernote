@@ -25,7 +25,7 @@ if((boolean)map.get("flag")){
 	System.out.print("실패");
 	HttpSession httpSession=request.getSession();
 	httpSession.setAttribute("title", title);
-	httpSession.setAttribute("text", text);
+	httpSession.setAttribute("text", text.replace("\"", "'"));
 	httpSession.setAttribute("aid", aid);
 %>
 <script>

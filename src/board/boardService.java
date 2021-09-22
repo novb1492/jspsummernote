@@ -107,6 +107,35 @@ public class boardService {
 		try {
 			confrimUpdate(originDto, boardDto);
 			boardDto.setCreated(utillService.makeToTimetamp(LocalDateTime.now()));
+			List<String>originImage=utillService.getImgSrc(originDto.getText());
+			List<String>dtoImages=utillService.getImgSrc(boardDto.getText());
+			System.out.println(originImage.toString());
+			System.out.println(dtoImages.toString());
+			if(dtoImages.isEmpty()) {
+				System.out.println("모든사진이 삭제되었습니다");
+				for(String s:originImage) {
+					deleteImage(s);
+				}
+			}else if(!originImage.isEmpty()) {
+				int originImageSize=originImage.size();
+				int dtoImagesSize=dtoImages.size();
+
+				for(int i=0;i<originImageSize;i++) {
+					for(int ii=0;ii<dtoImagesSize;ii++) {
+						String s=originImage.get(i);
+						String n=dtoImages.get(ii);
+						if(s.equals(n)) {
+							System.out.println("이전 사진 존재");
+							break;
+						}else if(!s.equals(n)&&ii==dtoImagesSize-1) {
+							System.out.println("삭제된 사진 발견");
+							deleteImage(s);
+						}
+					}
+				}
+					
+				
+			}
 			boardDao.update(boardDto);
 			map.put("flag", true);
 			return map;
@@ -143,18 +172,10 @@ public class boardService {
 			List<String>imgs=utillService.getImgSrc(text);
 			if(!imgs.isEmpty()) {
 				System.out.println("이미지가 존재하는 게시물 이미지 삭제시도");
-				String[] splite=null;
-				String fileName=null;
 				for(String s:imgs) {
-					splite=s.split("/");
-					fileName=splite[3];
-					System.out.println(fileName+" 이미지");
-					utillService.deletefile(imgPath+fileName);
+					deleteImage(s);
 				}
 			}
-			
-		
-
 			boardDao.deleteByAid(aid);
 			map.put("flag", true);
 			return map;
@@ -166,6 +187,13 @@ public class boardService {
 			return map;
 		}
 		
+	}
+	private void deleteImage(String imagePath) {
+		System.out.println("deleteImage");
+		String[] splite=imagePath.split("/");
+		String	 fileName=splite[3];
+		System.out.println(fileName+" 이미지");
+		utillService.deletefile(imgPath+fileName);
 	}
 	private void deleteConfrim(boardDto boardDto,String email) {
 		System.out.println("deleteConfrim");

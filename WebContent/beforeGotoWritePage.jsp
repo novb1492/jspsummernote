@@ -11,7 +11,7 @@ int aid=boardDto.getId();
 
 
 httpSession.setAttribute("title", title);
-httpSession.setAttribute("text", text);
+httpSession.setAttribute("text", text.replace("\"", "'"));
 httpSession.setAttribute("aid", Integer.toString(aid));
 
 response.sendRedirect("writePage.jsp");
