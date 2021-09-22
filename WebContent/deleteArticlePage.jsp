@@ -15,5 +15,15 @@ boardDto.setId(Integer.parseInt(aid));
 
 
 boardService boardService=new boardService();
-boardService.deleteArticle(Integer.parseInt(aid), email);
+Map<String,Object>map=boardService.deleteArticle(Integer.parseInt(aid), email);
+if((boolean)map.get("flag")==false){
+	System.out.print("실패");
+%>
+	<script>
+	alert("<%=map.get("message")%>");
+	location.href='getArticle.jsp?aid='+<%=aid%>;
+	</script>
+<%}else{
+	response.sendRedirect("index.jsp");	
+}
 %>

@@ -1,13 +1,15 @@
 package utill;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class utillService {
 	
-	public static LocalDateTime getNow() {
-		return LocalDateTime.now();
-	}
 	public static Timestamp makeToTimetamp(LocalDateTime localDateTime) {
 		return Timestamp.valueOf(localDateTime);
 	}
@@ -25,4 +27,28 @@ public class utillService {
         System.out.println(totalpage+" 전체 페이지");
         return totalpage;
     }
+    public static List<String> getImgSrc(String text) {
+    	System.out.println("getImgSrc");
+    	List<String>array=new ArrayList<>();
+    	Pattern nonValidPattern = Pattern.compile("<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>");
+		Matcher matcher = nonValidPattern.matcher(text);
+		while (matcher.find()) {
+			array.add(matcher.group(1));
+		}
+		return array;
+	}
+    public static void deletefile(String path) {
+    	System.out.println("deletefile");
+    	System.out.println("삭제 경로 "+path);
+    	File file = new File(path);
+    	if( file.exists() ){ 
+    		if(file.delete()){ 
+    			System.out.println("파일삭제 성공"); 
+    		}else{ 
+    			System.out.println("파일삭제 실패"); 
+    		} 
+    	}else{ 
+    	System.out.println("파일이 존재하지 않습니다."); 
+    	} 
+	}
 }

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +20,7 @@ public class boardService {
 	private final int pagesize=10;
 	private final int titleLength=50;
 	private final int textLength=1000;
+	private final String imgPath="C:/java_folder/make/WebContent/static/image/";
 	
 	public boardService() {
 		// TODO Auto-generated constructor stub
@@ -136,6 +139,22 @@ public class boardService {
 		boardDto boardDto=boardDao.findByAid(aid);
 		try {
 			deleteConfrim(boardDto, email);
+			String text=boardDto.getText();
+			List<String>imgs=utillService.getImgSrc(text);
+			if(!imgs.isEmpty()) {
+				System.out.println("이미지가 존재하는 게시물 이미지 삭제시도");
+				String[] splite=null;
+				String fileName=null;
+				for(String s:imgs) {
+					splite=s.split("/");
+					fileName=splite[3];
+					System.out.println(fileName+" 이미지");
+					utillService.deletefile(imgPath+fileName);
+				}
+			}
+			
+		
+
 			boardDao.deleteByAid(aid);
 			map.put("flag", true);
 			return map;
@@ -161,4 +180,5 @@ public class boardService {
 		}
 		throw new RuntimeException(message);
 	}
+
 }
