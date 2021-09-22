@@ -126,7 +126,7 @@ public class boardDao {
 			throw new RuntimeException("조회수 반영 실패");
 		}
 	}
-public void update(boardDto boardDto) {
+	public void update(boardDto boardDto) {
 		
 		String sql = "update article set title=?,text=?,created=? where aid=?";
 		try {
@@ -141,7 +141,22 @@ public void update(boardDto boardDto) {
 		}catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("insert error"+e.getMessage());
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException("글 테이블 수정 실패");
+		}
+	}
+	public void deleteByAid(int aid) {
+		
+		String sql = "delete from article where aid=?";
+		try {
+			PreparedStatement ps=conn.prepareStatement(sql);
+			ps.setInt(1, aid);
+		
+			ps.executeUpdate();
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("insert error"+e.getMessage());
+			throw new RuntimeException("글 테이블 삭제 실패");
 		}
 	}
 }

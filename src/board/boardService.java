@@ -130,4 +130,35 @@ public class boardService {
 		}
 		throw new RuntimeException(message);
 	}
+	public Map<String, Object> deleteArticle(int aid,String email) {
+		System.out.println("deleteArticle");
+		Map<String, Object>map=new HashMap<>();
+		boardDto boardDto=boardDao.findByAid(aid);
+		try {
+			deleteConfrim(boardDto, email);
+			boardDao.deleteByAid(aid);
+			map.put("flag", true);
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("deleteArticle error"+e.getMessage());
+			map.put("flag", false);
+			map.put("message", e.getMessage());
+			return map;
+		}
+		
+	}
+	private void deleteConfrim(boardDto boardDto,String email) {
+		System.out.println("deleteConfrim");
+		String message=null;
+		if(boardDto==null) {
+			message="존재하지 않는 게시물입니다";
+		}else if(!boardDto.getEmail().equals(email)) {
+			message="작성자가 일치 하지 않습니다";
+		}else {
+			System.out.println("삭제 유효성 통과");
+			return;
+		}
+		throw new RuntimeException(message);
+	}
 }

@@ -194,7 +194,7 @@ String email=(String)request.getSession().getAttribute("email");
            
                       
                             	<a href="beforeGotoWritePage.jsp" class="edit"><i class="fa fa-edit fa-fw"></i> 수정 </a>
-                                  <a href="javascript://" id="article-delete-btn"><i class="fa fa-trash-o fa-fw"></i> 삭제 </a>  
+                                  <a href="deleteArticlePage.jsp?aid=<%=boardDto.getId()%>" id="article-delete-btn"><i class="fa fa-trash-o fa-fw"></i> 삭제 </a>  
                            
                                 
                            
