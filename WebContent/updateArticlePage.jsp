@@ -1,15 +1,22 @@
+<%@page import="java.util.Map"%>
+<%@page import="board.boardService"%>
 <%@page import="board.boardDto"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ include file="header.jsp"%>
 
 <%
-String title = (String) httpSession.getAttribute("title");
-String text = (String) httpSession.getAttribute("text");
-String email = (String) httpSession.getAttribute("email");
-
-httpSession.removeAttribute("title");
-httpSession.removeAttribute("text");
+String email=(String)httpSession.getAttribute("email");
+int aid=Integer.parseInt(request.getParameter("aid"));
+boardService boardService=new boardService();
+Map<String,Object>map= boardService.selectAritcle(aid);
+boardDto boardDto=null;
+System.out.print((boolean)map.get("flag"));
+if((boolean)map.get("flag")==false){
+	response.sendRedirect("index.jsp");
+}else{
+	boardDto=(boardDto)map.get("dto");
+}
 %>
 <!DOCTYPE html>
 <html>
@@ -192,10 +199,10 @@ httpSession.removeAttribute("text");
 					</div>
 				</div>
 				<div class="panel-body">
-					<form action="insertArticle.jsp" method="post" id="article-form"
+					<form action="updateArticle.jsp" method="post" id="article-form"
 						class="article-form" role="form" onsubmit="return postForm()">
 						<fieldset class="form">
-	
+							<input type="hidden" name="aid" value=<%=aid%>>
 							<div class="form-group has-feedback">
 								<div></div>
 							</div>
@@ -318,6 +325,14 @@ $('#summernote').summernote({
         });
       
 	}
+    <%
+    if(boardDto!=null){
+    	%>
+    	document.getElementById('title').value="<%=boardDto.getTitle()%>";
+    	$('#summernote').summernote('code',"<%=boardDto.getText().replace("\"", "'")%>");
+    <%}
+    %>
+
 </script>
 </body>
 </html>

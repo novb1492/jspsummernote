@@ -86,6 +86,10 @@ public class boardService {
 		Map<String, Object>map=new HashMap<>();
 		try {
 			boardDto boardDto=boardDao.findByAid(aid);
+			if(boardDto.getTitle()==null) {
+				System.out.println("존재하지 않는 게시글");
+				throw new RuntimeException("존재하지 않는 게시글");
+			}
 			int plusHit=boardDto.getHit()+1;
 			boardDao.plusHit(aid, plusHit);
 			boardDto.setHit(plusHit);
@@ -119,7 +123,6 @@ public class boardService {
 			}else if(!originImage.isEmpty()) {
 				int originImageSize=originImage.size();
 				int dtoImagesSize=dtoImages.size();
-
 				for(int i=0;i<originImageSize;i++) {
 					for(int ii=0;ii<dtoImagesSize;ii++) {
 						String s=originImage.get(i);

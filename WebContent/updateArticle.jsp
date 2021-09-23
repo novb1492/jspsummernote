@@ -23,10 +23,7 @@ if((boolean)map.get("flag")){
 	response.sendRedirect("index.jsp");
 }else{
 	System.out.print("실패");
-	HttpSession httpSession=request.getSession();
-	httpSession.setAttribute("title", title);
-	httpSession.setAttribute("text", text.replace("\"", "'"));
-	httpSession.setAttribute("aid", aid);
+	request.setAttribute("aid", aid);
 %>
 <script>
 alert("<%=map.get("message")%>");
