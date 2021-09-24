@@ -7,6 +7,14 @@
 
 <%
 String email=(String)httpSession.getAttribute("email");
+if(email==null){
+%>
+<script>
+alert('로그인 부탁드립니다');
+location.href='index.jsp';
+</script>
+
+<% }
 int aid=Integer.parseInt(request.getParameter("aid"));
 boardService boardService=new boardService();
 Map<String,Object>map= boardService.selectAritcle(aid);

@@ -188,7 +188,7 @@
         </div>
 
         <h5 class="list-group-item-heading list-group-item-evaluate">
-            <a href="getArticle.jsp?aid=<%=b.getId() %>">
+            <a href="articlePage.jsp?aid=<%=b.getId() %>">
                 <%=b.getTitle() %>
        			</a>
         </h5>

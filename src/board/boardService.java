@@ -50,9 +50,9 @@ public class boardService {
 		String message=null;
 		String title=boardDto.getTitle();
 		String text=boardDto.getText();
-		if(title==null) {
+		if(title==null||title.length()<=0) {
 			message="제목이 공백입니다";
-		}else if(text==null) {
+		}else if(text==null||text.length()<=0) {
 			message="내용이 공백입니다";
 		}else if(boardDto.getEmail()==null) {
 			message="로그인 후 시도 해주세요";

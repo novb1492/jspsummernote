@@ -1,15 +1,29 @@
+<%@page import="java.util.List"%>
+<%@page import="comment.commentService"%>
+<%@page import="comment.commentDto"%>
 <%@page import="java.util.Map"%>
 <%@page import="board.boardService"%>
 <%@page import="board.boardDto"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
  <%@ include file="header.jsp" %>
-<%
-
-boardDto boardDto=(boardDto)httpSession.getAttribute("dto");
-String email=(String)request.getSession().getAttribute("email");
+ <%
+int aid=Integer.parseInt(request.getParameter("aid"));
+System.out.print(aid);
+boardService boardService=new boardService();
+Map<String,Object>map=boardService.selectAritcle(aid);
+boardDto boardDto=(boardDto)map.get("dto");
+if(boardDto==null){
 %>
-
+<script>
+	alert('존재하지 않는 게시글입니다');
+	location.href='index.jsp';
+</script>
+<%}
+String email=(String)httpSession.getAttribute("email");
+commentService commentService=new commentService();
+List<commentDto>commentDtos=commentService.selectByAid(aid);
+%>
 <!DOCTYPE html>
 <html>
 <body>
@@ -222,7 +236,7 @@ String email=(String)request.getSession().getAttribute("email");
         <!-- List group -->
         <ul class="list-group">
             <li class="list-group-item note-form clearfix">
-	            		<form action="/article/addNote/1043629" method="post" class="note-create-form">
+	            		<form action="insertComment.jsp" method="post" class="note-create-form">
 								<input type="hidden" name="_csrf" value="d6901329-40ab-4284-80fa-9068a185e77c">
 	            			<div class="content-body panel-body pull-left">
 	                            <div style="margin-left: 5px;">
@@ -234,25 +248,60 @@ String email=(String)request.getSession().getAttribute("email");
 <div class="avatar clearfix avatar-medium ">
 		<a href="/user/info/126561" class="avatar-photo"><img src="https://ssl.pstatic.net/static/pwe/address/img_profile.png"></a>
 		<div class="avatar-info">
-				<a class="nickname" href="/user/info/126561" title="novb****"><%=boardDto.getEmail() %></a>
-					<div class="activity block"><span class="fa fa-flash"></span> 85</div>
+				<a class="nickname" href="/user/info/126561" title="novb****"><%=email %></a>
 		</div>
 </div>
 	                            </div>
 	                            <fieldset class="form">
-	                                <input type="hidden" name="textType" value="HTML" id="note.textType">
-	                                <textarea name="note.text" id="note-create" placeholder="댓글 쓰기" class="form-control"></textarea>
+	                                <input type="hidden" name="aid" value="<%=boardDto.getId() %>" id="note.textType">
+	                                <textarea name="comment" id="note-create" placeholder="댓글 쓰기" class="form-control"></textarea>
 	                            </fieldset>
 	                        </div>
 	                        <div class="content-function-cog note-submit-buttons clearfix">
 	                            <p><a href="javascript://" id="note-create-cancel-btn" class="btn btn-default btn-wide" style="display: none;">취소</a></p>
-	                            <input type="submit" name="create" id="btn-create-btn" class="btn btn-success btn-wide" value="등록" disabled="disabled">
+	                            <%
+	                            if(email==null){
+	                            %>
+	                             <input type="submit" name="create" id="btn-create-btn" class="btn btn-success btn-wide" value="등록" placeholder="로그인후 작성해주세요" disabled="disabled">
+	                            <%}else{
+	                            	%>
+	                            	 <input type="submit" name="create" id="btn-create-btn" class="btn btn-success btn-wide" placeholder="최대 200자입니다" value="등록">
+	                            <%}
+	                            %>
+	                           
 	                        </div>
 	                    </form>
+	                    
             </li>
         </ul>
-    </div>
-</div>
+
+        <%
+        if(!commentDtos.isEmpty()){
+        	for(commentDto c:commentDtos){
+        		
+        %>
+   
+							<%=c.getEmail() %>
+							<br>
+							<%=c.getCreated() %>
+							<br>
+							<%=c.getComment() %>
+							<br>
+			                             
+		  <%
+		  	if(c.getEmail().equals(email)){
+		  		%>
+		  		<input type="button" value="수정">	
+		  		<input type="button" value="삭제">	
+		  		<input type="button" value="확인">
+		  	<%}
+		  %>
+			
+         <br>
+        <%}}
+        %>
+     
+       
 
 <form action="/article/dissent/1043629" method="post" name="note-dissent-form" id="note-dissent-form">
 	<input type="hidden" name="_method" value="PUT" id="_method">

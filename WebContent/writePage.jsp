@@ -7,7 +7,14 @@
 String title = (String) httpSession.getAttribute("title");
 String text = (String) httpSession.getAttribute("text");
 String email = (String) httpSession.getAttribute("email");
+if(email==null){
+%>
+<script>
+alert('로그인 부탁드립니다');
+location.href='index.jsp';
+</script>
 
+<% }
 httpSession.removeAttribute("title");
 httpSession.removeAttribute("text");
 %>

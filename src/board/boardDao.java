@@ -18,9 +18,9 @@ public class boardDao {
 			String password = "1111";
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(url,user,password);
-		}catch(Exception e)
-		{
+		}catch(Exception e){
 			e.printStackTrace();
+			throw new RuntimeException("db 접속실패");
 		}
 	}
 	public void insert(boardDto boardDto) {
