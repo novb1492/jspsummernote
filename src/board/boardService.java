@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import enums.StringsEnums;
 import utill.utillService;
 
 
@@ -69,17 +70,10 @@ public class boardService {
 	public List<boardDto> selectAllByPage(int nowPage,HttpServletRequest request) {
 		System.out.println("selectAllByPage");
 		int totalPage=utillService.getTotalpages(boardDao.getTotalCount(), pagesize);
-		int first=0;
-		int end=0;
-		if(nowPage==1) {
-			first=0;
-		}else {
-			first=(nowPage-1)*pagesize+1;
-		}
-		end=first+pagesize;
+		Map<String, Integer>map=utillService.getPagingStartEnd(nowPage, pagesize);
 		HttpSession httpSession=request.getSession();
 		httpSession.setAttribute("totalPage", totalPage);
-		return boardDao.selectPagin(first,end);
+		return boardDao.selectPagin( map.get(StringsEnums.start.getString()), map.get(StringsEnums.end.getString()));
 	}
 	public Map<String, Object> selectAritcle(int aid) {
 		System.out.println("selectAritcle");

@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import enums.StringsEnums;
 import utill.utillService;
 
 public class commentService {
 	comentDao comentDao=new comentDao();
 	private final int maxLength=200;
+	private final int pagesize=10;
 	public commentService() {
 		// TODO Auto-generated constructor stub
 	}
@@ -49,10 +51,11 @@ public class commentService {
 		}
 		throw new RuntimeException(message);
 	}
-	public List<comentDto> selectByAid(int aid) {
+	public List<comentDto> selectByAid(int aid,int nowPage) {
 		System.out.println("selectByAid");
 		try {
-			return  comentDao.findByAid(aid, 0, 10);
+			Map<String, Integer>map=utillService.getPagingStartEnd(nowPage, pagesize);
+			return  comentDao.findByAid(aid, map.get(StringsEnums.start.getString()), map.get(StringsEnums.end.getString()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("댓글 불러오기 실패");

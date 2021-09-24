@@ -41,15 +41,15 @@ public class comentDao {
 				throw new RuntimeException(e.getMessage());
 			}
 	}
-	public List<comentDto> findByAid(int aid,int first,int end) {
+	public List<comentDto> findByAid(int aid,int start,int end) {
 		System.out.println("findByAid");
 		List<comentDto>array=new ArrayList<>();
-		String sql = "select * from(select ROW_NUMBER() OVER (ORDER BY cid desc) num, a.* from coment a order by cid desc) where aid=? and num between 0 and 10";
+		String sql = "select * from(select ROW_NUMBER() OVER (ORDER BY cid desc) num, a.* from coment a order by cid desc) where aid=? and num between ? and ?";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
 			ps.setInt(1, aid);
-			//ps.setInt(2, first);
-			//ps.setInt(3,end);
+			ps.setInt(2, start);
+			ps.setInt(3,end);
 			ResultSet rs;
 			rs = ps.executeQuery();
 			while(rs.next()) {

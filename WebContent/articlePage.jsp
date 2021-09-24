@@ -22,7 +22,12 @@ if(boardDto==null){
 <%}
 String email=(String)httpSession.getAttribute("email");
 commentService commentService=new commentService();
-List<comentDto>commentDtos=commentService.selectByAid(aid);
+String snowpage=request.getParameter("page");
+int nowPage=1;
+if(snowpage!=null){
+	nowPage=Integer.parseInt(snowpage);
+}
+List<comentDto>commentDtos=commentService.selectByAid(aid,nowPage);
 %>
 <!DOCTYPE html>
 <html>
@@ -280,7 +285,7 @@ List<comentDto>commentDtos=commentService.selectByAid(aid);
         		
         %>
  
-        	<%=c.getEmail() %>
+        	<%=c.getCid() %> <%=c.getEmail() %>
 			<br>
 			<%=c.getCreated() %>
 			<br>
