@@ -19,10 +19,15 @@ import utill.utillService;
 public class boardService {
 	private	boardDao boardDao=new boardDao();
 	private final int pagesize=10;
+	private final int comentPagesize=10;
 	private final int titleLength=50;
 	private final int textLength=1000;
 	private final String imgPath="C:/java_folder/make/WebContent/static/image/";
 	private final String flag=StringsEnums.flag.getString();
+	private final String start=StringsEnums.start.getString();
+	private final String end=StringsEnums.end.getString();
+	private final String article=StringsEnums.article.getString();
+	private final String coments=StringsEnums.coment.getString();
 	
 	public boardService() {
 		// TODO Auto-generated constructor stub
@@ -76,12 +81,14 @@ public class boardService {
 		httpSession.setAttribute("totalPage", totalPage);
 		return boardDao.selectPagin( map.get(StringsEnums.start.getString()), map.get(StringsEnums.end.getString()));
 	}
-	public Map<String, Object> selectAritcle(int aid) {
+	public Map<String, Object> selectAritcleJoinComent(int aid,int nowPage) {
 		System.out.println("selectAritcle");
 		Map<String, Object>map=new HashMap<>();
 		try {
-			boardDto boardDto=boardDao.findByAid(aid);
-			if(boardDto.getTitle()==null) {
+			Map<String, Integer>map2=utillService.getPagingStartEnd(nowPage, comentPagesize);
+			Map<String, Object>map3=boardDao.findByAidJoinComment(aid,map2.get(start),map2.get(end));
+			boardDto boardDto=(boardDto)map3.get(article);
+			if(boardDto==null) {
 				System.out.println("존재하지 않는 게시글");
 				throw new RuntimeException("존재하지 않는 게시글");
 			}
@@ -89,7 +96,9 @@ public class boardService {
 			boardDao.plusHit(aid, plusHit);
 			boardDto.setHit(plusHit);
 			map.put(flag, true);
-			map.put("dto", boardDto);
+			map.put(article, boardDto);
+			map.put(coments, map3.get(coments));
+			System.out.println("전송");
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();

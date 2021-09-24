@@ -41,33 +41,6 @@ public class comentDao {
 				throw new RuntimeException(e.getMessage());
 			}
 	}
-	public List<comentDto> findByAid(int aid,int start,int end) {
-		System.out.println("findByAid");
-		List<comentDto>array=new ArrayList<>();
-		String sql = "select * from(select ROW_NUMBER() OVER (ORDER BY cid desc) num, a.* from coment a order by cid desc) where aid=? and num between ? and ?";
-		try {
-			PreparedStatement ps=conn.prepareStatement(sql);
-			ps.setInt(1, aid);
-			ps.setInt(2, start);
-			ps.setInt(3,end);
-			ResultSet rs;
-			rs = ps.executeQuery();
-			while(rs.next()) {
-				comentDto commentDto=new comentDto();
-				commentDto.setAid(rs.getInt("aid"));
-				commentDto.setCid(rs.getInt("cid"));
-				commentDto.setComment(rs.getString("text"));
-				commentDto.setCreated(rs.getTimestamp("created"));
-				commentDto.setEmail(rs.getString("email"));
-				array.add(commentDto);
-			}
-			return array;
-		}catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("insert error"+e.getMessage());
-			throw new RuntimeException(e.getMessage());
-		}
-	}
 	public comentDto findByCid(int cid) {
 		String sql = "select * from coment where cid=?";
 		comentDto commentDto=new comentDto();
@@ -79,10 +52,10 @@ public class comentDao {
 			if(rs.next()) {
 				 commentDto=new comentDto();
 				 commentDto.setAid(rs.getInt("aid"));
-				 commentDto.setCid(rs.getInt("cid"));
-				 commentDto.setComment(rs.getString("text"));
-				 commentDto.setCreated(rs.getTimestamp("created"));
-				 commentDto.setEmail(rs.getString("email"));
+				 commentDto.setCid(rs.getInt("caid"));
+				 commentDto.setComment(rs.getString("ctext"));
+				 commentDto.setCreated(rs.getTimestamp("ccreated"));
+				 commentDto.setEmail(rs.getString("cemail"));
 			}
 			return commentDto;
 		}catch (Exception e) {
@@ -92,7 +65,7 @@ public class comentDao {
 		}
 	}
 	public void update(comentDto commentDto) {
-		String sql = "update coment set text=?,created=? where cid=?";
+		String sql = "update coment set ctext=?,ccreated=? where cid=?";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
 			ps.setString(1, commentDto.getComment());

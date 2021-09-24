@@ -3,7 +3,9 @@ package enums;
 public enum StringsEnums {
 	start("start"),
 	end("end"),
-	flag("flag");
+	flag("flag"),
+	article("article"),
+	coment("coment");
 
     private String messege;
 

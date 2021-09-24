@@ -1,3 +1,4 @@
+<%@page import="enums.StringsEnums"%>
 <%@page import="java.util.List"%>
 <%@page import="comment.commentService"%>
 <%@page import="comment.comentDto"%>
@@ -9,25 +10,25 @@
  <%@ include file="header.jsp" %>
  <%
 int aid=Integer.parseInt(request.getParameter("aid"));
+String email=(String)httpSession.getAttribute("email");
 System.out.print(aid);
+String snowpage=request.getParameter("page");
+int nowPage=1;
+if(snowpage!=null){
+	nowPage=Integer.parseInt(snowpage);
+}
 boardService boardService=new boardService();
-Map<String,Object>map=boardService.selectAritcle(aid);
-boardDto boardDto=(boardDto)map.get("dto");
-if(boardDto==null){
+Map<String,Object>map=boardService.selectAritcleJoinComent(aid,nowPage);
+if((boolean)map.get(StringsEnums.flag.getString())==false){
 %>
 <script>
 	alert('존재하지 않는 게시글입니다');
 	location.href='index.jsp';
 </script>
 <%}
-String email=(String)httpSession.getAttribute("email");
-commentService commentService=new commentService();
-String snowpage=request.getParameter("page");
-int nowPage=1;
-if(snowpage!=null){
-	nowPage=Integer.parseInt(snowpage);
-}
-List<comentDto>commentDtos=commentService.selectByAid(aid,nowPage);
+boardDto boardDto=(boardDto)map.get(StringsEnums.article.getString());
+List<comentDto>comentDtos=(List<comentDto>)map.get(StringsEnums.coment.getString());
+System.out.print(comentDtos.isEmpty()+" "+comentDtos.get(0).getComment());
 %>
 <!DOCTYPE html>
 <html>
@@ -279,10 +280,11 @@ List<comentDto>commentDtos=commentService.selectByAid(aid,nowPage);
 	                    
             </li>
         </ul>
-        <%
-        if(!commentDtos.isEmpty()){
-        	for(comentDto c:commentDtos){
-        		
+
+         <%
+        if(comentDtos.get(0).getEmail()!=null){
+        	for(comentDto c:comentDtos){
+    	
         %>
  
         	<%=c.getCid() %> <%=c.getEmail() %>

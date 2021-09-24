@@ -53,16 +53,6 @@ public class commentService {
 		}
 		throw new RuntimeException(message);
 	}
-	public List<comentDto> selectByAid(int aid,int nowPage) {
-		System.out.println("selectByAid");
-		try {
-			Map<String, Integer>map=utillService.getPagingStartEnd(nowPage, pagesize);
-			return  comentDao.findByAid(aid, map.get(StringsEnums.start.getString()), map.get(StringsEnums.end.getString()));
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("댓글 불러오기 실패");
-		}
-	}
 	public Map<String, Object> updateComment(comentDto commentDto) {
 		System.out.println("updateComment");
 		Map<String, Object>map=new HashMap<>();

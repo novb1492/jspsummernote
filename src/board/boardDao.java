@@ -5,7 +5,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import comment.comentDto;
+import enums.StringsEnums;
 
 
 
@@ -55,12 +60,12 @@ public class boardDao {
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				boardDto boardDto=new boardDto();
-				boardDto.setEmail(rs.getString("email"));
+				boardDto.setEmail(rs.getString("aemail"));
 				boardDto.setHit(rs.getInt("hit"));
-				boardDto.setText(rs.getString("text"));
+				boardDto.setText(rs.getString("atext"));
 				boardDto.setTitle(rs.getString("title"));
 				boardDto.setId(rs.getInt("aid"));
-				boardDto.setCreated(rs.getTimestamp("created"));
+				boardDto.setCreated(rs.getTimestamp("acreated"));
 				array.add(boardDto);
 			}
 			return array;
@@ -85,24 +90,43 @@ public class boardDao {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	public boardDto findByAid(int aid) {
+	public Map<String, Object> findByAidJoinComment(int aid,int start,int end) {
 		System.out.println("findByAid");
+		Map<String, Object>map=new HashMap<>();
 		boardDto boardDto=new boardDto();
-		String sql = "select * from article where aid=?";
+		List<comentDto>comentDtos=new ArrayList<>();
+		String sql = "select a.*,c.* from article a left join (select * from(select ROW_NUMBER() OVER (ORDER BY cid desc) num, a.* from coment a ) where num between ? and ?) c on a.aid=c.caid where a.aid=?";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
-			ps.setInt(1, aid);
+			ps.setInt(1, start);
+			ps.setInt(2, end);
+			ps.setInt(3, aid);
 			ResultSet rs;
 			rs = ps.executeQuery();
-			if(rs.next()) {
-				boardDto.setEmail(rs.getString("email"));
-				boardDto.setHit(rs.getInt("hit"));
-				boardDto.setText(rs.getString("text"));
-				boardDto.setTitle(rs.getString("title"));
-				boardDto.setId(rs.getInt("aid"));
-				boardDto.setCreated(rs.getTimestamp("created"));
+			boolean temp=true;
+			while(rs.next()) {
+				if(temp) {
+					boardDto.setEmail(rs.getString("aemail"));
+					boardDto.setHit(rs.getInt("hit"));
+					boardDto.setText(rs.getString("atext"));
+					boardDto.setTitle(rs.getString("title"));
+					boardDto.setId(rs.getInt("aid"));
+					boardDto.setCreated(rs.getTimestamp("acreated"));
+					map.put(StringsEnums.article.getString(), boardDto);
+					System.out.println("게시글 map 넣음");
+					temp=false;
+				}
+				
+				comentDto comentDto=new comentDto();
+				comentDto.setAid(rs.getInt("caid"));
+				comentDto.setCid(rs.getInt("cid"));
+				comentDto.setComment(rs.getString("ctext"));
+				comentDto.setCreated(rs.getTimestamp("ccreated"));
+				comentDto.setEmail(rs.getString("cemail"));
+				comentDtos.add(comentDto);
 			}
-			return boardDto;
+			map.put(StringsEnums.coment.getString(), comentDtos);
+			return map;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -111,7 +135,7 @@ public class boardDao {
 		}
 	}
 	public void plusHit(int aid,int plusHit) {
-		System.out.println("findByAid");
+		System.out.println("plusHit");
 	
 		String sql = "update article set hit=? where aid=?";
 		try {
@@ -128,7 +152,7 @@ public class boardDao {
 	}
 	public void update(boardDto boardDto) {
 		
-		String sql = "update article set title=?,text=?,created=? where aid=?";
+		String sql = "update article set title=?,atext=?,acreated=? where aid=?";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
 			ps.setString(1, boardDto.getTitle());
@@ -142,6 +166,32 @@ public class boardDao {
 			e.printStackTrace();
 			System.out.println("update error"+e.getMessage());
 			throw new RuntimeException("글 테이블 수정 실패");
+		}
+	}
+	public boardDto findByAid(int aid) {
+		System.out.println("findByAid");
+		boardDto boardDto=new boardDto();
+		String sql = "select * from article where aid=?";
+		try {
+			PreparedStatement ps=conn.prepareStatement(sql);
+			ps.setInt(1, aid);
+			ResultSet rs;
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				System.out.println(rs.getString("title"));
+				boardDto.setEmail(rs.getString("aemail"));
+				boardDto.setHit(rs.getInt("hit"));
+				boardDto.setText(rs.getString("atext"));
+				boardDto.setTitle(rs.getString("title"));
+				boardDto.setId(rs.getInt("aid"));
+				boardDto.setCreated(rs.getTimestamp("acreated"));
+			}
+			return boardDto;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("findByAid error"+e.getMessage());
+			throw new RuntimeException("게시글 찾기에 실패했습니다");
 		}
 	}
 	public void deleteByAid(int aid) {
