@@ -293,7 +293,8 @@ List<comentDto>commentDtos=commentService.selectByAid(aid,nowPage);
 		<div  id="<%=c.getCid()%>coment"><%=c.getComment() %></div>	
 		<br>
 		<input type="hidden" name="cid" value="<%=c.getCid()%>">
-                        
+          <input type="hidden" name="aid" value="<%=c.getAid()%>"> 
+           <input type="hidden" name="page" value="<%=nowPage%>">                
 		  <%
 		  	if(c.getEmail().equals(email)){
 		  		%>

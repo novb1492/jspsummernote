@@ -13,6 +13,8 @@ public class commentService {
 	comentDao comentDao=new comentDao();
 	private final int maxLength=200;
 	private final int pagesize=10;
+	private final String imgPath="C:/java_folder/make/WebContent/static/image/";
+	private final String flag=StringsEnums.flag.getString();
 	public commentService() {
 		// TODO Auto-generated constructor stub
 	}
@@ -24,12 +26,12 @@ public class commentService {
 			commentDto.setCreated(utillService.makeToTimetamp(LocalDateTime.now()));
 			comentDao.insert(commentDto);
 			System.out.println("댓글 등록 성공");
-			map.put("flag", true);
+			map.put(flag, true);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("insertComment error"+e.getMessage());
-			map.put("flag", false);
+			map.put(flag, false);
 			map.put("message", e.getMessage());
 			return map;
 		}
@@ -68,13 +70,16 @@ public class commentService {
 		try {
 			confrimUpdate(commentDto, orgin);
 			commentDto.setCreated(utillService.makeToTimetamp(LocalDateTime.now()));
+			List<String>originImages=utillService.getImgSrc(orgin.getComment());
+			List<String>updateImages=utillService.getImgSrc(commentDto.getComment());
+			utillService.deleteImage(originImages, updateImages, imgPath);
 			comentDao.update(commentDto);
-			map.put("flag", true);
+			map.put(flag, true);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("updateComment error "+e.getMessage());
-			map.put("flag", false);
+			map.put(flag, false);
 			map.put("message", e.getMessage());
 			return map;
 		}

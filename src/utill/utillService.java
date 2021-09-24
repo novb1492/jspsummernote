@@ -58,6 +58,7 @@ public class utillService {
     	} 
 	}
     public static Map<String, Integer> getPagingStartEnd(int nowPage,int pagesize) {
+    	System.out.println("getPagingStartEnd");
     	int start=0;
     	Map<String, Integer>map=new HashMap<>();
     	if(nowPage!=1) {
@@ -66,5 +67,41 @@ public class utillService {
 		map.put(StringsEnums.start.getString(), start);
 		map.put(StringsEnums.end.getString(), start+pagesize);
 		return map;
+	}
+    public static void deleteImage(List<String>originImage,List<String>dtoImages,String imgPath) {
+    	System.out.println("deleteImage");
+    	if(dtoImages.isEmpty()) {
+			System.out.println("모든사진이 삭제되었습니다");
+			for(String s:originImage) {
+				makePath(s,imgPath);
+			}
+		}else if(!originImage.isEmpty()) {
+			int originImageSize=originImage.size();
+			int dtoImagesSize=dtoImages.size();
+			for(int i=0;i<originImageSize;i++) {
+				for(int ii=0;ii<dtoImagesSize;ii++) {
+					String s=originImage.get(i);
+					String n=dtoImages.get(ii);
+					if(s.equals(n)) {
+						System.out.println("이전 사진 존재");
+						break;
+					}else if(!s.equals(n)&&ii==dtoImagesSize-1) {
+						System.out.println("삭제된 사진 발견");
+						makePath(s,imgPath);
+					}
+				}
+			}
+				
+			
+		}
+		
+	}
+    private static void makePath(String imgFullName,String imgPath) {
+    	System.out.println("makePath");
+    	String[] splite=imgFullName.split("/");
+		String	 fileName=splite[3];
+		System.out.println(fileName+" 이미지");
+		deletefile(imgPath+fileName);
+		
 	}
 }

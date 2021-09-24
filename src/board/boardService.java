@@ -22,6 +22,7 @@ public class boardService {
 	private final int titleLength=50;
 	private final int textLength=1000;
 	private final String imgPath="C:/java_folder/make/WebContent/static/image/";
+	private final String flag=StringsEnums.flag.getString();
 	
 	public boardService() {
 		// TODO Auto-generated constructor stub
@@ -36,13 +37,13 @@ public class boardService {
 			boardDao.insert(boardDto);
 			
 			System.out.println("글저장성공");
-			resmap.put("flag", true);
+			resmap.put(flag, true);
 			return resmap;
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("insertArticle"+e.getMessage());
 			resmap.put("message",e.getMessage());
-			resmap.put("flag", false);
+			resmap.put(flag, false);
 			return resmap;
 		}
 		
@@ -87,13 +88,13 @@ public class boardService {
 			int plusHit=boardDto.getHit()+1;
 			boardDao.plusHit(aid, plusHit);
 			boardDto.setHit(plusHit);
-			map.put("flag", true);
+			map.put(flag, true);
 			map.put("dto", boardDto);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("selectAritcle error"+e.getMessage());
-			map.put("flag",false);
+			map.put(flag,false);
 			map.put("messsage",  e.getMessage());
 			return map;
 		}
@@ -107,39 +108,14 @@ public class boardService {
 			boardDto.setCreated(utillService.makeToTimetamp(LocalDateTime.now()));
 			List<String>originImage=utillService.getImgSrc(originDto.getText());
 			List<String>dtoImages=utillService.getImgSrc(boardDto.getText());
-			System.out.println(originImage.toString());
-			System.out.println(dtoImages.toString());
-			if(dtoImages.isEmpty()) {
-				System.out.println("모든사진이 삭제되었습니다");
-				for(String s:originImage) {
-					deleteImage(s);
-				}
-			}else if(!originImage.isEmpty()) {
-				int originImageSize=originImage.size();
-				int dtoImagesSize=dtoImages.size();
-				for(int i=0;i<originImageSize;i++) {
-					for(int ii=0;ii<dtoImagesSize;ii++) {
-						String s=originImage.get(i);
-						String n=dtoImages.get(ii);
-						if(s.equals(n)) {
-							System.out.println("이전 사진 존재");
-							break;
-						}else if(!s.equals(n)&&ii==dtoImagesSize-1) {
-							System.out.println("삭제된 사진 발견");
-							deleteImage(s);
-						}
-					}
-				}
-					
-				
-			}
+			utillService.deleteImage(originImage, dtoImages,imgPath);
 			boardDao.update(boardDto);
-			map.put("flag", true);
+			map.put(flag, true);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("updateArticle error"+e.getMessage());
-			map.put("flag", false);
+			map.put(flag, false);
 			map.put("message", e.getMessage());
 			return map;
 		}
@@ -174,12 +150,12 @@ public class boardService {
 				}
 			}
 			boardDao.deleteByAid(aid);
-			map.put("flag", true);
+			map.put(flag, true);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("deleteArticle error"+e.getMessage());
-			map.put("flag", false);
+			map.put(flag, false);
 			map.put("message", e.getMessage());
 			return map;
 		}
