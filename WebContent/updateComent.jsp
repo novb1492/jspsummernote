@@ -8,7 +8,7 @@ request.setCharacterEncoding("utf-8");
 String coment=request.getParameter("coment");
 int cid=Integer.parseInt(request.getParameter("cid"));
 String email=(String)request.getSession().getAttribute("email");
-System.out.print(coment+" "+cid);
+System.out.print(coment.length()+" "+cid);
 comentDto comentDto=new comentDto();
 commentService commentService=new commentService();
 comentDto.setComment(coment);

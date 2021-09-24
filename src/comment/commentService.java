@@ -41,7 +41,9 @@ public class commentService {
 			message="댓글이 빈칸입니다";
 		}else if(commentDto.getComment().length()>maxLength) {
 			message="글자수가 "+maxLength+"를 초과합니다";
+			System.out.println(commentDto.getComment().length());
 		}else {
+			System.out.println(commentDto.getComment().length());
 			System.out.println("댓글 등록 유효성 통과");
 			return;
 		}

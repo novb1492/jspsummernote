@@ -274,17 +274,17 @@ List<comentDto>commentDtos=commentService.selectByAid(aid);
 	                    
             </li>
         </ul>
-
         <%
         if(!commentDtos.isEmpty()){
         	for(comentDto c:commentDtos){
         		
         %>
-        <form action="updateComent.jsp" method="post">
+ 
         	<%=c.getEmail() %>
 			<br>
 			<%=c.getCreated() %>
 			<br>
+			<form action="updateComent.jsp" method="post">
 		<div  id="<%=c.getCid()%>coment"><%=c.getComment() %></div>	
 		<br>
 		<input type="hidden" name="cid" value="<%=c.getCid()%>">
@@ -298,11 +298,11 @@ List<comentDto>commentDtos=commentService.selectByAid(aid);
 		  		<input type="button" onclick="cancle(<%=c.getCid()%>)" id="<%=c.getCid()%>cancle"  value="취소" disabled="disabled">
 		  	<%}
 		  %>
-			
+			 </form>
          <br>
         <%}}
         %>
-        </form>
+      
 		
      
        
@@ -355,36 +355,39 @@ function ready(cid) {
 	document.getElementById(cid+'ready').disabled=true;
 	var text=document.getElementById(cid+'coment').innerHTML;
 	originComment=text;
-	 document.getElementById(cid+'coment').innerHTML=("<textarea name='coment' id='"+cid+"textArea' class='summernote'  class='form-control input-block-level' style='display: none;''></textarea>");
-	 $('.summernote').summernote();
+	 document.getElementById(cid+'coment').innerHTML=("<textarea name='coment' id='"+cid+"textArea'></textarea>");
+	 makeEditor(cid);
 	 $('#'+cid+'textArea').summernote('code', text);
 	 beforecid=cid;
 	 commentflag=true;
 }
-$('.summernote').summernote({
-	height: 300,                 // 에디터 높이
-	minHeight: null,             // 최소 높이
-	maxHeight: 100,             // 최대 높이
-	focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
-	lang: "ko-KR",					// 한글 설정
-	placeholder: '최대 2048자까지 쓸 수 있습니다',	//placeholder 설정
-	callbacks: {	//여기 부분이 이미지를 첨부하는 부분
-		onImageUpload : function(files) {
-            for (var i = files.length - 1; i >= 0; i--) {
-                uploadSummernoteImageFile(files[i],this);
-		    }
-		},
-		onPaste: function (e) {
-			var clipboardData = e.originalEvent.clipboardData;
-			if (clipboardData && clipboardData.items && clipboardData.items.length) {
-				var item = clipboardData.items[0];
-				if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
-					e.preventDefault();
+function makeEditor(cid) {
+	$('#'+cid+'textArea').summernote({
+		height: 300,                 // 에디터 높이
+		minHeight: null,             // 최소 높이
+		maxHeight: null,             // 최대 높이
+		focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+		lang: "ko-KR",					// 한글 설정
+		placeholder: '최대 2048자까지 쓸 수 있습니다',	//placeholder 설정
+		callbacks: {	//여기 부분이 이미지를 첨부하는 부분
+			onImageUpload : function(files) {
+	            for (var i = files.length - 1; i >= 0; i--) {
+	                uploadSummernoteImageFile(files[i],this);
+			    }
+			},
+			onPaste: function (e) {
+				var clipboardData = e.originalEvent.clipboardData;
+				if (clipboardData && clipboardData.items && clipboardData.items.length) {
+					var item = clipboardData.items[0];
+					if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
+						e.preventDefault();
+					}
 				}
 			}
 		}
-	}
-});
+	});
+}
+
 function uploadSummernoteImageFile(file, editor) {
 	var requestUrl='saveimage.jsp';
 	var data = new FormData();
