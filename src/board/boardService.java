@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import comment.comentDto;
+import comment.commentService;
 import enums.StringsEnums;
 import utill.utillService;
 
@@ -18,6 +20,7 @@ import utill.utillService;
 
 public class boardService {
 	private	boardDao boardDao=new boardDao();
+	private commentService comentService=new commentService();
 	private final int pagesize=10;
 	private final int comentPagesize=10;
 	private final int titleLength=50;
@@ -85,6 +88,7 @@ public class boardService {
 		System.out.println("selectAritcle");
 		Map<String, Object>map=new HashMap<>();
 		try {
+			int totalComentPage=comentService.getTotalComentPage(aid);
 			Map<String, Integer>map2=utillService.getPagingStartEnd(nowPage, comentPagesize);
 			Map<String, Object>map3=boardDao.findByAidJoinComment(aid,map2.get(start),map2.get(end));
 			boardDto boardDto=(boardDto)map3.get(article);
@@ -95,9 +99,11 @@ public class boardService {
 			int plusHit=boardDto.getHit()+1;
 			boardDao.plusHit(aid, plusHit);
 			boardDto.setHit(plusHit);
+			List<comentDto>comentDtos=(List<comentDto>)map3.get(coments);
 			map.put(flag, true);
 			map.put(article, boardDto);
-			map.put(coments, map3.get(coments));
+			map.put(coments, comentDtos);
+			map.put("totalPage", totalComentPage);
 			System.out.println("전송");
 			return map;
 		} catch (Exception e) {
@@ -120,6 +126,28 @@ public class boardService {
 			utillService.deleteImage(originImage, dtoImages,imgPath);
 			boardDao.update(boardDto);
 			map.put(flag, true);
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("updateArticle error"+e.getMessage());
+			map.put(flag, false);
+			map.put("message", e.getMessage());
+			return map;
+		}
+		
+	}
+
+	public Map<String, Object> selectAritcle(int aid) {
+		System.out.println("updateArticle");
+		Map<String, Object>map=new HashMap<>();
+
+		try {
+			boardDto boardDto=boardDao.findByAid(aid);
+			if(boardDto==null) {
+				throw new RuntimeException("게시글이 존재하지 않습니다");
+			}
+			map.put(flag, true);
+			map.put(article, boardDto);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();

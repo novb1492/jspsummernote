@@ -20,7 +20,7 @@ boardDto.setTitle(title);
 boardService boardService=new boardService();
 Map<String,Object>map=boardService.updateArticle(boardDto);
 if((boolean)map.get("flag")){
-	response.sendRedirect("index.jsp");
+	response.sendRedirect("articlePage.jsp?aid="+aid);
 }else{
 	System.out.print("실패");
 	request.setAttribute("aid", aid);

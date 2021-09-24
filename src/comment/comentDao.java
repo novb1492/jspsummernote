@@ -42,6 +42,7 @@ public class comentDao {
 			}
 	}
 	public comentDto findByCid(int cid) {
+		System.out.println("findByCid");
 		String sql = "select * from coment where cid=?";
 		comentDto commentDto=new comentDto();
 		try {
@@ -51,8 +52,8 @@ public class comentDao {
 			rs = ps.executeQuery();
 			if(rs.next()) {
 				 commentDto=new comentDto();
-				 commentDto.setAid(rs.getInt("aid"));
-				 commentDto.setCid(rs.getInt("caid"));
+				 commentDto.setAid(rs.getInt("caid"));
+				 commentDto.setCid(rs.getInt("cid"));
 				 commentDto.setComment(rs.getString("ctext"));
 				 commentDto.setCreated(rs.getTimestamp("ccreated"));
 				 commentDto.setEmail(rs.getString("cemail"));
@@ -78,6 +79,21 @@ public class comentDao {
 		}catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("insert error"+e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	public int countByAid(int aid) {
+		System.out.println("countByAid");
+		String sql = "select count(*) from coment where caid=?";
+		try {
+			PreparedStatement ps=conn.prepareStatement(sql);
+			ps.setInt(1, aid);
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			return rs.getInt(1);
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("countByAid error"+e.getMessage());
 			throw new RuntimeException(e.getMessage());
 		}
 	}

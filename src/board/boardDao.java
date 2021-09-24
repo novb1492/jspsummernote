@@ -51,7 +51,7 @@ public class boardDao {
 		System.out.println("selectPagin"+first+" "+end );
 		
 		List<boardDto>array=new ArrayList<>();
-		String sql = "select * from(select ROW_NUMBER() OVER (ORDER BY aid desc) num, a.* from article a order by aid desc) where num between ? and ?";
+		String sql = "select * from(select ROW_NUMBER() OVER (ORDER BY aid desc) num, a.* from article a ) where num between ? and ?";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
 			ps.setInt(1, first);
@@ -80,8 +80,7 @@ public class boardDao {
 		String sql = "select count(*) from article";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
-			ResultSet rs;
-			rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 			rs.next();
 			return rs.getInt(1);
 		}catch (Exception e) {
@@ -91,11 +90,11 @@ public class boardDao {
 		}
 	}
 	public Map<String, Object> findByAidJoinComment(int aid,int start,int end) {
-		System.out.println("findByAid");
+		System.out.println("findByAidJoinComment");
 		Map<String, Object>map=new HashMap<>();
 		boardDto boardDto=new boardDto();
 		List<comentDto>comentDtos=new ArrayList<>();
-		String sql = "select a.*,c.* from article a left join (select * from(select ROW_NUMBER() OVER (ORDER BY cid desc) num, a.* from coment a ) where num between ? and ?) c on a.aid=c.caid where a.aid=?";
+		String sql = "select a.*,c.* from article a left join (select * from(select ROW_NUMBER() OVER (ORDER BY cid desc ) num, a.* from coment a ) where num between ? and ?) c on a.aid=c.caid where a.aid=?";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
 			ps.setInt(1, start);
@@ -130,7 +129,7 @@ public class boardDao {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("findByAid error"+e.getMessage());
+			System.out.println("findByAidJoinComment error"+e.getMessage());
 			throw new RuntimeException("게시글 찾기에 실패했습니다");
 		}
 	}

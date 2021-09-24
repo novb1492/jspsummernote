@@ -1,3 +1,4 @@
+<%@page import="enums.StringsEnums"%>
 <%@page import="java.util.Map"%>
 <%@page import="board.boardService"%>
 <%@page import="board.boardDto"%>
@@ -19,11 +20,11 @@ int aid=Integer.parseInt(request.getParameter("aid"));
 boardService boardService=new boardService();
 Map<String,Object>map= boardService.selectAritcle(aid);
 boardDto boardDto=null;
-System.out.print((boolean)map.get("flag"));
-if((boolean)map.get("flag")==false){
+
+if((boolean)map.get(StringsEnums.flag.getString())==false){
 	response.sendRedirect("index.jsp");
 }else{
-	boardDto=(boardDto)map.get("dto");
+	boardDto=(boardDto)map.get(StringsEnums.article.getString());
 }
 %>
 <!DOCTYPE html>

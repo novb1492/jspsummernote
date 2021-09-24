@@ -29,6 +29,9 @@ if((boolean)map.get(StringsEnums.flag.getString())==false){
 boardDto boardDto=(boardDto)map.get(StringsEnums.article.getString());
 List<comentDto>comentDtos=(List<comentDto>)map.get(StringsEnums.coment.getString());
 System.out.print(comentDtos.isEmpty()+" "+comentDtos.get(0).getComment());
+int minuspage=nowPage-1;
+int pluspage=nowPage+1;
+int totalpage=(Integer)map.get("totalPage");
 %>
 <!DOCTYPE html>
 <html>
@@ -310,7 +313,17 @@ System.out.print(comentDtos.isEmpty()+" "+comentDtos.get(0).getComment());
          <br>
         <%}}
         %>
-      
+        <%=nowPage %>/<%=totalpage %>
+        <br>
+      <%
+      if(nowPage>1){
+    	  %>
+    	  <a href="articlePage.jsp?aid=<%=aid %>&page=<%=minuspage %>">이전</a>
+      <%}else if(nowPage<totalpage){
+    	  %>
+    	   <a href="articlePage.jsp?aid=<%=aid %>&page=<%=pluspage %>">다음</a>
+      <%}
+      %>
 		
      
        
