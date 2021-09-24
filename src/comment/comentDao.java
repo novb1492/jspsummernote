@@ -9,9 +9,9 @@ import java.util.List;
 
 import board.boardDto;
 
-public class commentDao {
+public class comentDao {
 	private Connection conn;
-	public commentDao() {
+	public comentDao() {
 		try {
 			String url = "jdbc:oracle:thin:@localhost:1521:xe";
 			String user = "kim";
@@ -23,7 +23,7 @@ public class commentDao {
 			throw new RuntimeException("db접속 실패");
 		}
 	}
-	public void insert(commentDto commentDto) {
+	public void insert(comentDto commentDto) {
 			
 			String sql = "INSERT INTO coment VALUES(commentid.NEXTVAL,?,?,?,?)";
 			try {
@@ -41,19 +41,19 @@ public class commentDao {
 				throw new RuntimeException(e.getMessage());
 			}
 	}
-	public List<commentDto> findByAid(int aid,int first,int end) {
+	public List<comentDto> findByAid(int aid,int first,int end) {
 		System.out.println("findByAid");
-		List<commentDto>array=new ArrayList<>();
+		List<comentDto>array=new ArrayList<>();
 		String sql = "select * from(select ROW_NUMBER() OVER (ORDER BY cid desc) num, a.* from coment a order by cid desc) where aid=? and num between 0 and 10";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
 			ps.setInt(1, aid);
-			//ps.setInt(1, first);
-			//ps.setInt(2,end);
+			//ps.setInt(2, first);
+			//ps.setInt(3,end);
 			ResultSet rs;
 			rs = ps.executeQuery();
 			while(rs.next()) {
-				commentDto commentDto=new commentDto();
+				comentDto commentDto=new comentDto();
 				commentDto.setAid(rs.getInt("aid"));
 				commentDto.setCid(rs.getInt("cid"));
 				commentDto.setComment(rs.getString("text"));
@@ -62,6 +62,46 @@ public class commentDao {
 				array.add(commentDto);
 			}
 			return array;
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("insert error"+e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	public comentDto findByCid(int cid) {
+		String sql = "select * from coment where cid=?";
+		comentDto commentDto=new comentDto();
+		try {
+			PreparedStatement ps=conn.prepareStatement(sql);
+			ps.setInt(1, cid);
+			ResultSet rs;
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				 commentDto=new comentDto();
+				 commentDto.setAid(rs.getInt("aid"));
+				 commentDto.setCid(rs.getInt("cid"));
+				 commentDto.setComment(rs.getString("text"));
+				 commentDto.setCreated(rs.getTimestamp("created"));
+				 commentDto.setEmail(rs.getString("email"));
+			}
+			return commentDto;
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("findByCid error"+e.getMessage());
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	public void update(comentDto commentDto) {
+		String sql = "update coment set text=?,created=? where cid=?";
+		try {
+			PreparedStatement ps=conn.prepareStatement(sql);
+			ps.setString(1, commentDto.getComment());
+			ps.setTimestamp(2, commentDto.getCreated());
+			ps.setInt(3, commentDto.getCid());
+
+		
+			ps.executeUpdate();
+			
 		}catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("insert error"+e.getMessage());

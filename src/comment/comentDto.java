@@ -2,7 +2,7 @@ package comment;
 
 import java.sql.Timestamp;
 
-public class commentDto {
+public class comentDto {
 	public int getCid() {
 		return cid;
 	}

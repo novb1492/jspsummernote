@@ -1,6 +1,6 @@
 <%@page import="java.util.List"%>
 <%@page import="comment.commentService"%>
-<%@page import="comment.commentDto"%>
+<%@page import="comment.comentDto"%>
 <%@page import="java.util.Map"%>
 <%@page import="board.boardService"%>
 <%@page import="board.boardDto"%>
@@ -22,7 +22,7 @@ if(boardDto==null){
 <%}
 String email=(String)httpSession.getAttribute("email");
 commentService commentService=new commentService();
-List<commentDto>commentDtos=commentService.selectByAid(aid);
+List<comentDto>commentDtos=commentService.selectByAid(aid);
 %>
 <!DOCTYPE html>
 <html>
@@ -236,7 +236,7 @@ List<commentDto>commentDtos=commentService.selectByAid(aid);
         <!-- List group -->
         <ul class="list-group">
             <li class="list-group-item note-form clearfix">
-	            		<form action="insertComment.jsp" method="post" class="note-create-form">
+	            		<form action="insertComent.jsp" method="post" class="note-create-form">
 								<input type="hidden" name="_csrf" value="d6901329-40ab-4284-80fa-9068a185e77c">
 	            			<div class="content-body panel-body pull-left">
 	                            <div style="margin-left: 5px;">
@@ -277,22 +277,24 @@ List<commentDto>commentDtos=commentService.selectByAid(aid);
 
         <%
         if(!commentDtos.isEmpty()){
-        	for(commentDto c:commentDtos){
+        	for(comentDto c:commentDtos){
         		
         %>
-			<%=c.getEmail() %>
-							<br>
+        <form action="updateComent.jsp" method="post">
+        	<%=c.getEmail() %>
+			<br>
 			<%=c.getCreated() %>
-							<br>
-	<div id="<%=c.getCid()%>coment"><%=c.getComment() %></div>	
-							<br>
+			<br>
+		<div  id="<%=c.getCid()%>coment"><%=c.getComment() %></div>	
+		<br>
+		<input type="hidden" name="cid" value="<%=c.getCid()%>">
                         
 		  <%
 		  	if(c.getEmail().equals(email)){
 		  		%>
 		  		<input type="button" onclick="ready(<%=c.getCid()%>)" id="<%=c.getCid()%>ready" value="수정">	
 		  		<input type="button" onclick="deleteComment(<%=c.getCid()%>)"  value="삭제">	
-		  		<input type="button"  onclick="try(<%=c.getCid()%>)" id="<%=c.getCid()%>try"  value="확인" disabled="disabled">
+		  		<input type="submit"  id="<%=c.getCid()%>try"  value="확인" disabled="disabled">
 		  		<input type="button" onclick="cancle(<%=c.getCid()%>)" id="<%=c.getCid()%>cancle"  value="취소" disabled="disabled">
 		  	<%}
 		  %>
@@ -300,6 +302,8 @@ List<commentDto>commentDtos=commentService.selectByAid(aid);
          <br>
         <%}}
         %>
+        </form>
+		
      
        
 
@@ -344,13 +348,14 @@ var beforecid;
 function ready(cid) {
 	if(commentflag){
 		cancle(beforecid);
+
 	}
 	document.getElementById(cid+'try').disabled=false;
 	document.getElementById(cid+'cancle').disabled=false;
 	document.getElementById(cid+'ready').disabled=true;
 	var text=document.getElementById(cid+'coment').innerHTML;
 	originComment=text;
-	 document.getElementById(cid+'coment').innerHTML=("<textarea name='text' id='"+cid+"textArea' class='summernote'  class='form-control input-block-level' style='display: none;''></textarea>");
+	 document.getElementById(cid+'coment').innerHTML=("<textarea name='coment' id='"+cid+"textArea' class='summernote'  class='form-control input-block-level' style='display: none;''></textarea>");
 	 $('.summernote').summernote();
 	 $('#'+cid+'textArea').summernote('code', text);
 	 beforecid=cid;
