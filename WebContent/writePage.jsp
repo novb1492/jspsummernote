@@ -290,7 +290,7 @@ $('#summernote').summernote({
 				placeholder: '최대 2048자까지 쓸 수 있습니다',	//placeholder 설정
 				callbacks: {	//여기 부분이 이미지를 첨부하는 부분
 					onImageUpload : function(files) {
-                        for (var i = files.length - 1; i >= 0; i--) {///서버에서 직접 리턴받는 형식이 아니여서 그런가 for를 돌려도 마지막 사진만 썸네일이 나오네요
+                        for (var i = files.length - 1; i >= 0; i--) {
                             uploadSummernoteImageFile(files[i],this);
             		    }
 					},

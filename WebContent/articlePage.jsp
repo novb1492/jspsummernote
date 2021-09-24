@@ -280,20 +280,20 @@ List<commentDto>commentDtos=commentService.selectByAid(aid);
         	for(commentDto c:commentDtos){
         		
         %>
-   
-							<%=c.getEmail() %>
+			<%=c.getEmail() %>
 							<br>
-							<%=c.getCreated() %>
+			<%=c.getCreated() %>
 							<br>
-							<%=c.getComment() %>
+	<div id="<%=c.getCid()%>coment"><%=c.getComment() %></div>	
 							<br>
-			                             
+                        
 		  <%
 		  	if(c.getEmail().equals(email)){
 		  		%>
-		  		<input type="button" value="수정">	
-		  		<input type="button" value="삭제">	
-		  		<input type="button" value="확인">
+		  		<input type="button" onclick="ready(<%=c.getCid()%>)" id="<%=c.getCid()%>ready" value="수정">	
+		  		<input type="button" onclick="deleteComment(<%=c.getCid()%>)"  value="삭제">	
+		  		<input type="button"  onclick="try(<%=c.getCid()%>)" id="<%=c.getCid()%>try"  value="확인" disabled="disabled">
+		  		<input type="button" onclick="cancle(<%=c.getCid()%>)" id="<%=c.getCid()%>cancle"  value="취소" disabled="disabled">
 		  	<%}
 		  %>
 			
@@ -337,5 +337,75 @@ List<commentDto>commentDtos=commentService.selectByAid(aid);
                 <div id="footer" class="footer" role="contentinfo">
 
 <%@ include file="footer.jsp" %>
+<script type="text/javascript">
+var originComment;
+var commentflag=false;
+var beforecid;
+function ready(cid) {
+	if(commentflag){
+		cancle(beforecid);
+	}
+	document.getElementById(cid+'try').disabled=false;
+	document.getElementById(cid+'cancle').disabled=false;
+	document.getElementById(cid+'ready').disabled=true;
+	var text=document.getElementById(cid+'coment').innerHTML;
+	originComment=text;
+	 document.getElementById(cid+'coment').innerHTML=("<textarea name='text' id='"+cid+"textArea' class='summernote'  class='form-control input-block-level' style='display: none;''></textarea>");
+	 $('.summernote').summernote();
+	 $('#'+cid+'textArea').summernote('code', text);
+	 beforecid=cid;
+	 commentflag=true;
+}
+$('.summernote').summernote({
+	height: 300,                 // 에디터 높이
+	minHeight: null,             // 최소 높이
+	maxHeight: 100,             // 최대 높이
+	focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+	lang: "ko-KR",					// 한글 설정
+	placeholder: '최대 2048자까지 쓸 수 있습니다',	//placeholder 설정
+	callbacks: {	//여기 부분이 이미지를 첨부하는 부분
+		onImageUpload : function(files) {
+            for (var i = files.length - 1; i >= 0; i--) {
+                uploadSummernoteImageFile(files[i],this);
+		    }
+		},
+		onPaste: function (e) {
+			var clipboardData = e.originalEvent.clipboardData;
+			if (clipboardData && clipboardData.items && clipboardData.items.length) {
+				var item = clipboardData.items[0];
+				if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
+					e.preventDefault();
+				}
+			}
+		}
+	}
+});
+function uploadSummernoteImageFile(file, editor) {
+	var requestUrl='saveimage.jsp';
+	var data = new FormData();
+	data.append("file", file);
+	
+	$.ajax({
+	data : data,
+	type : "POST",
+	url : requestUrl,
+	contentType : false,
+	processData : false,
+	async: false,
+	xhrFields: {withCredentials: true},
+	success : function(response) {
+		console.log(response.url+' 젤위'+response.test)
+	    $(editor).summernote('insertImage', response.url,response.filename);
+	}
+	});
+}
+function cancle(cid) {
+	document.getElementById(cid+'coment').innerHTML=(originComment);
+	document.getElementById(cid+'cancle').disabled=true;
+	document.getElementById(cid+'ready').disabled=false;
+	document.getElementById(cid+'try').disabled=true;
+	commentflag=false;
+}
+</script>
 </body>
 </html>
