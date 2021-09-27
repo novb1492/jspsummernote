@@ -96,12 +96,29 @@ public class utillService {
 		}
 		
 	}
+    public static void deleteImage(List<String>imgs,String imgPath) {
+    	System.out.println("deleteImage");
+    	if(imgs.isEmpty()) {
+			System.out.println("사진이 없는 게시물");
+			return;
+		}
+		for(String s:imgs) {
+			makePath(s, imgPath);
+		}
+		
+	}
     private static void makePath(String imgFullName,String imgPath) {
     	System.out.println("makePath");
     	String[] splite=imgFullName.split("/");
 		String	 fileName=splite[3];
 		System.out.println(fileName+" 이미지");
 		deletefile(imgPath+fileName);
-		
+	}
+    public static boolean checkZero(int id) {
+    	System.out.println("checkZero");
+		if(id==0) {
+			return true;
+		}
+		return false;
 	}
 }

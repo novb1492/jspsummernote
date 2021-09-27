@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import board.boardDto;
 
@@ -42,23 +43,23 @@ public class comentDao {
 			}
 	}
 	public comentDto findByCid(int cid) {
-		System.out.println("findByCid");
+		System.out.println("findByCid" +cid);
 		String sql = "select * from coment where cid=?";
-		comentDto commentDto=new comentDto();
+		comentDto comentDto=new comentDto();
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
 			ps.setInt(1, cid);
 			ResultSet rs;
 			rs = ps.executeQuery();
 			if(rs.next()) {
-				 commentDto=new comentDto();
-				 commentDto.setAid(rs.getInt("caid"));
-				 commentDto.setCid(rs.getInt("cid"));
-				 commentDto.setComment(rs.getString("ctext"));
-				 commentDto.setCreated(rs.getTimestamp("ccreated"));
-				 commentDto.setEmail(rs.getString("cemail"));
+				 comentDto=new comentDto();
+				 comentDto.setAid(rs.getInt("caid"));
+				 comentDto.setCid(rs.getInt("cid"));
+				 comentDto.setComment(rs.getString("ctext"));
+				 comentDto.setCreated(rs.getTimestamp("ccreated"));
+				 comentDto.setEmail(rs.getString("cemail"));
 			}
-			return commentDto;
+			return comentDto;
 		}catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("findByCid error"+e.getMessage());

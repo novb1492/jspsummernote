@@ -56,8 +56,8 @@ public class commentService {
 	public Map<String, Object> updateComment(comentDto commentDto) {
 		System.out.println("updateComment");
 		Map<String, Object>map=new HashMap<>();
-		comentDto orgin=comentDao.findByCid(commentDto.getCid());
 		try {
+			comentDto orgin=comentDao.findByCid(commentDto.getCid());
 			confrimUpdate(commentDto, orgin);
 			commentDto.setCreated(utillService.makeToTimetamp(LocalDateTime.now()));
 			List<String>originImages=utillService.getImgSrc(orgin.getComment());
@@ -75,15 +75,15 @@ public class commentService {
 		}
 		
 	}
-	private void confrimUpdate(comentDto commentDto,comentDto oriCommentDto) {
+	private void confrimUpdate(comentDto comentDto,comentDto oriComentDto) {
 		System.out.println("confrimUpdate");
 		String message=null;
-		if(oriCommentDto==null) {
+		if(utillService.checkZero(oriComentDto.getCid())) {
 			message="존재하지 않는 댓글입니다";
-		}else if(!commentDto.getEmail().equals(oriCommentDto.getEmail())) {
+		}else if(!comentDto.getEmail().equals(oriComentDto.getEmail())) {
 			message="작성자가 일치 하지 않습니다";
 		}else{
-			confrimInsert(commentDto);
+			confrimInsert(comentDto);
 			System.out.println("댓글 수정 유효성 통과");
 			return;
 		}

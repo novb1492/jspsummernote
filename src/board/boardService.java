@@ -161,7 +161,7 @@ public class boardService {
 	private void confrimUpdate(boardDto originDto,boardDto boardDto) {
 		System.out.println("confrimUpdate");
 		String message=null;
-		if(originDto==null) {
+		if(utillService.checkZero(originDto.getId())) {
 			message="존재하지 않는 게시글 입니다";
 		}else if(!originDto.getEmail().equals(boardDto.getEmail())) {
 			message="작성자가 일치 하지 않습니다";
@@ -182,9 +182,7 @@ public class boardService {
 			List<String>imgs=utillService.getImgSrc(text);
 			if(!imgs.isEmpty()) {
 				System.out.println("이미지가 존재하는 게시물 이미지 삭제시도");
-				for(String s:imgs) {
-					deleteImage(s);
-				}
+				utillService.deleteImage(imgs,imgPath);
 			}
 			boardDao.deleteByAid(aid);
 			map.put(flag, true);
@@ -198,17 +196,10 @@ public class boardService {
 		}
 		
 	}
-	private void deleteImage(String imagePath) {
-		System.out.println("deleteImage");
-		String[] splite=imagePath.split("/");
-		String	 fileName=splite[3];
-		System.out.println(fileName+" 이미지");
-		utillService.deletefile(imgPath+fileName);
-	}
 	private void deleteConfrim(boardDto boardDto,String email) {
 		System.out.println("deleteConfrim");
 		String message=null;
-		if(boardDto==null) {
+		if(utillService.checkZero(boardDto.getId())) {
 			message="존재하지 않는 게시물입니다";
 		}else if(!boardDto.getEmail().equals(email)) {
 			message="작성자가 일치 하지 않습니다";
