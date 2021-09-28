@@ -57,10 +57,10 @@ public class utillService {
     	System.out.println("파일이 존재하지 않습니다."); 
     	} 
 	}
-    public static Map<String, Integer> getPagingStartEnd(int nowPage,int pagesize) {
+    public static Map<String, Object> getPagingStartEnd(int nowPage,int pagesize) {
     	System.out.println("getPagingStartEnd");
     	int start=0;
-    	Map<String, Integer>map=new HashMap<>();
+    	Map<String, Object>map=new HashMap<>();
     	if(nowPage!=1) {
     		start=(nowPage-1)*pagesize+1;
 		}

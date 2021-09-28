@@ -38,4 +38,11 @@ public class comentDto {
 	private int aid;
 	private Timestamp created;
 	private String email;
+	private int totalCount;
+	public int getTotalCount() {
+		return totalCount;
+	}
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
 }

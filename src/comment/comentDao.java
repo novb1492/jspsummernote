@@ -83,19 +83,4 @@ public class comentDao {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	public int countByAid(int aid) {
-		System.out.println("countByAid");
-		String sql = "select count(*) from coment where caid=?";
-		try {
-			PreparedStatement ps=conn.prepareStatement(sql);
-			ps.setInt(1, aid);
-			ResultSet rs = ps.executeQuery();
-			rs.next();
-			return rs.getInt(1);
-		}catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("countByAid error"+e.getMessage());
-			throw new RuntimeException(e.getMessage());
-		}
-	}
 }

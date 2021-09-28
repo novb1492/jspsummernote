@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,30 +77,49 @@ public class boardService {
 		}
 		throw new RuntimeException(message);
 	}
-	public List<boardDto> selectAllByPage(int nowPage,HttpServletRequest request) {
+	public Map<String, Object> selectAllByPage(int nowPage,HttpServletRequest request ) {
 		System.out.println("selectAllByPage");
-		int totalPage=utillService.getTotalpages(boardDao.getTotalCount(), pagesize);
-		Map<String, Integer>map=utillService.getPagingStartEnd(nowPage, pagesize);
-		HttpSession httpSession=request.getSession();
-		httpSession.setAttribute("totalPage", totalPage);
-		return boardDao.selectPagin( map.get(StringsEnums.start.getString()), map.get(StringsEnums.end.getString()));
+		String searchTitle=Optional.ofNullable(request.getParameter("title")).orElseGet(()->null);
+		Map<String, Object>map=utillService.getPagingStartEnd(nowPage, pagesize);
+		List<boardDto>boardDtos=getList(searchTitle, map);
+		int totalPage=1;
+		if(boardDtos.size()>0) {
+			totalPage=utillService.getTotalpages(boardDtos.get(0).getTotalCount(), pagesize);
+		}
+		map.clear();
+		map.put("dtos", boardDtos);
+		map.put("totalpage", totalPage);
+		return map;
+	}
+	private List<boardDto> getList(String searchTitle,Map<String, Object> map) {
+		System.out.println("getList");
+		if(searchTitle==null||searchTitle.length()==0||searchTitle.isEmpty()) {
+			System.out.println("검색어 없음");
+			return 	boardDao.selectPagin((int)map.get(start),(int)map.get(end));
+		}
+		System.out.println("검색어 지정 검색");
+		System.out.println("검색어 "+searchTitle);
+		return 	boardDao.selectPagin((int)map.get(start),(int)map.get(end),searchTitle);
 	}
 	public Map<String, Object> selectAritcleJoinComent(int aid,int nowPage) {
 		System.out.println("selectAritcle");
 		Map<String, Object>map=new HashMap<>();
 		try {
-			int totalComentPage=comentService.getTotalComentPage(aid);
-			Map<String, Integer>map2=utillService.getPagingStartEnd(nowPage, comentPagesize);
-			Map<String, Object>map3=boardDao.findByAidJoinComment(aid,map2.get(start),map2.get(end));
-			boardDto boardDto=(boardDto)map3.get(article);
-			if(boardDto==null) {
+			
+			map=utillService.getPagingStartEnd(nowPage, comentPagesize);
+			map=boardDao.findByAidJoinComment(aid,(int)map.get(start),(int)map.get(end));
+			boardDto boardDto=(boardDto)map.get(article);
+			if(boardDto.getTitle()==null) {
 				System.out.println("존재하지 않는 게시글");
 				throw new RuntimeException("존재하지 않는 게시글");
 			}
 			int plusHit=boardDto.getHit()+1;
 			boardDao.plusHit(aid, plusHit);
 			boardDto.setHit(plusHit);
-			List<comentDto>comentDtos=(List<comentDto>)map3.get(coments);
+		
+			List<comentDto>comentDtos=(List<comentDto>)map.get(coments);
+			int totalComentPage=utillService.getTotalpages(comentDtos.get(0).getTotalCount(), pagesize);
+			map.clear();
 			map.put(flag, true);
 			map.put(article, boardDto);
 			map.put(coments, comentDtos);
@@ -126,28 +146,6 @@ public class boardService {
 			utillService.deleteImage(originImage, dtoImages,imgPath);
 			boardDao.update(boardDto);
 			map.put(flag, true);
-			return map;
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("updateArticle error"+e.getMessage());
-			map.put(flag, false);
-			map.put("message", e.getMessage());
-			return map;
-		}
-		
-	}
-
-	public Map<String, Object> selectAritcle(int aid) {
-		System.out.println("updateArticle");
-		Map<String, Object>map=new HashMap<>();
-
-		try {
-			boardDto boardDto=boardDao.findByAid(aid);
-			if(boardDto==null) {
-				throw new RuntimeException("게시글이 존재하지 않습니다");
-			}
-			map.put(flag, true);
-			map.put(article, boardDto);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();

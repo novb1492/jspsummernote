@@ -49,9 +49,9 @@ public class boardDao {
 	}
 	public List<boardDto> selectPagin(int first,int end) {
 		System.out.println("selectPagin"+first+" "+end );
-		
+		String sql = null;
 		List<boardDto>array=new ArrayList<>();
-		String sql = "select * from(select ROW_NUMBER() OVER (ORDER BY aid desc) num, a.* from article a ) where num between ? and ?";
+		sql = "select b.*,(select count(*) from article)totalcount from(select ROW_NUMBER() OVER (ORDER BY aid desc)  num, a.* from article a ) b where num between ? and ?";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
 			ps.setInt(1, first);
@@ -66,6 +66,7 @@ public class boardDao {
 				boardDto.setTitle(rs.getString("title"));
 				boardDto.setId(rs.getInt("aid"));
 				boardDto.setCreated(rs.getTimestamp("acreated"));
+				boardDto.setTotalCount(rs.getInt("TOTALCOUNT"));
 				array.add(boardDto);
 			}
 			return array;
@@ -75,14 +76,30 @@ public class boardDao {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	public int getTotalCount() {
-		System.out.println("selectPagin");
-		String sql = "select count(*) from article";
+	public List<boardDto> selectPagin(int first,int end,String title) {
+		System.out.println("selectPagin"+first+" "+end );
+		String sql = null;
+		List<boardDto>array=new ArrayList<>();
+		sql = "select b.*,(select count(*) from article where title like ?)totalcount from(select ROW_NUMBER() OVER (ORDER BY aid desc)  num, a.* from article a ) b where  title like ? and num between ? and ?";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-			rs.next();
-			return rs.getInt(1);
+			ps.setString(1, "%"+title+"%");
+			ps.setString(2, "%"+title+"%");
+			ps.setInt(3, first);
+			ps.setInt(4,end);
+			ResultSet rs= ps.executeQuery();
+			while(rs.next()) {
+				boardDto boardDto=new boardDto();
+				boardDto.setEmail(rs.getString("aemail"));
+				boardDto.setHit(rs.getInt("hit"));
+				boardDto.setText(rs.getString("atext"));
+				boardDto.setTitle(rs.getString("title"));
+				boardDto.setId(rs.getInt("aid"));
+				boardDto.setCreated(rs.getTimestamp("acreated"));
+				boardDto.setTotalCount(rs.getInt("totalcount"));
+				array.add(boardDto);
+			}
+			return array;
 		}catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("insert error"+e.getMessage());
@@ -94,12 +111,13 @@ public class boardDao {
 		Map<String, Object>map=new HashMap<>();
 		boardDto boardDto=new boardDto();
 		List<comentDto>comentDtos=new ArrayList<>();
-		String sql = "select a.*,c.* from article a left join (select * from(select ROW_NUMBER() OVER (ORDER BY cid desc ) num, a.* from coment a ) where num between ? and ?) c on a.aid=c.caid where a.aid=?";
+		String sql = "select a.*,c.*,(select count(*) from coment where caid=?)totalcount from article a left join (select * from(select ROW_NUMBER() OVER (ORDER BY cid desc ) num, a.* from coment a ) where num between ? and ?) c on a.aid=c.caid where a.aid=?";
 		try {
 			PreparedStatement ps=conn.prepareStatement(sql);
-			ps.setInt(1, start);
-			ps.setInt(2, end);
-			ps.setInt(3, aid);
+			ps.setInt(1, aid);
+			ps.setInt(2, start);
+			ps.setInt(3, end);
+			ps.setInt(4, aid);
 			ResultSet rs;
 			rs = ps.executeQuery();
 			boolean temp=true;
@@ -122,6 +140,7 @@ public class boardDao {
 				comentDto.setComment(rs.getString("ctext"));
 				comentDto.setCreated(rs.getTimestamp("ccreated"));
 				comentDto.setEmail(rs.getString("cemail"));
+				comentDto.setTotalCount(rs.getInt("totalcount"));
 				comentDtos.add(comentDto);
 			}
 			map.put(StringsEnums.coment.getString(), comentDtos);

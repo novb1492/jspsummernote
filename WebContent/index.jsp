@@ -1,3 +1,4 @@
+<%@page import="java.util.Map"%>
 <%@page import="board.boardService"%>
 <%@page import="board.boardDto"%>
 <%@page import="java.util.List"%>
@@ -12,10 +13,11 @@
 	}
 	System.out.print(nowPage+" 요청페이지");
    boardService boardService=new boardService();
-   List<boardDto>array=boardService.selectAllByPage(nowPage,request);
-   int totalPage=(int)httpSession.getAttribute("totalPage");
+   Map<String,Object>map =boardService.selectAllByPage(nowPage,request);
+   int totalPage=(int)map.get("totalpage");
    int minus=nowPage-1;
    int plus=nowPage+1;
+   List<boardDto>array=(List<boardDto>)map.get("dtos");
    %>
 <!DOCTYPE html>
 <html>
@@ -130,21 +132,20 @@
 	    <a  class="create btn btn-success btn-wide pull-right" href="writePage.jsp"><i class="fa fa-pencil"></i> 새 글 쓰기</a>
 	    
 	    <h4>Tech Q&amp;A</h4>
-	    <form id="category-filter-form" name="category-filter-form" method="get" action="/articles/tech-qna">
+	    <form id="category-filter-form" name="category-filter-form" method="get" action="index.jsp">
 		    <div class="category-filter-wrapper">
 	            <div class="category-filter-query pull-right">
 	                <div class="input-group input-group-sm">
-	                    <input type="search" name="query" id="search-field" class="form-control" placeholder="검색어" value="">
+	                    <input type="text" name="title" id="search-field" class="form-control" placeholder="검색어" value="">
+	                     <input type="hidden" name="requestPage" id="search-field" class="form-control"  value="1">
 	                    <span class="input-group-btn">
-	                        <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+	                        <button type="submit" class="btn btn-default" value="검색"><i class="fa fa-search"></i></button>
 	                    </span>
 	                </div>
 	            </div>
 	            <ul class="list-sort pull-left">
 	            	<li><a href="/articles/tech-qna?query=&amp;sort=id&amp;order=desc" data-sort="id" data-order="desc" class="category-sort-link active">최신순</a></li>
 	            </ul>
-	            <input type="hidden" name="sort" id="category-sort-input" value="id">
-	            <input type="hidden" name="order" id="category-order-input" value="desc">
 		    </div>
 		</form>
 	</div>

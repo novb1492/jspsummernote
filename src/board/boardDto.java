@@ -9,7 +9,14 @@ public class boardDto {
 	 private int hit;
 	 private int id;
 	 private Timestamp created;
-	 private int totalPage;
+	 private int totalCount;
+	 public int getTotalCount() {
+		return totalCount;
+	}
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+	private int totalPage;
 	public int getTotalPage() {
 		return totalPage;
 	}

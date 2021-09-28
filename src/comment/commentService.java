@@ -89,9 +89,4 @@ public class commentService {
 		}
 		throw new RuntimeException(message);
 	}
-	public int getTotalComentPage(int aid) {
-		System.out.println("getTotalComentPage");
-		int count=comentDao.countByAid(aid);
-		return utillService.getTotalpages(count, pagesize);
-	}
 }
