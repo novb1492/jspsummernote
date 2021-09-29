@@ -5,7 +5,8 @@ public enum StringsEnums {
 	end("end"),
 	flag("flag"),
 	article("article"),
-	coment("coment");
+	coment("coment"),
+	message("message");
 
     private String messege;
 

@@ -83,4 +83,19 @@ public class comentDao {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
+	public void delete(int cid) {
+		System.out.println("delete");
+		String sql = "delete from  coment where cid=?";
+		try {
+			PreparedStatement ps=conn.prepareStatement(sql);
+			ps.setInt(1, cid);
+			ps.executeUpdate();
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("delete error"+e.getMessage());
+			throw new RuntimeException("댓글 삭제 실패");
+		}
+		
+	}
 }

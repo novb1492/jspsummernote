@@ -15,10 +15,11 @@ public class commentService {
 	private final int pagesize=10;
 	private final String imgPath="C:/java_folder/make/WebContent/static/image/";
 	private final String flag=StringsEnums.flag.getString();
+	private final String message=StringsEnums.message.getString();
 	public commentService() {
 		// TODO Auto-generated constructor stub
 	}
-	public Map<String, Object> insertComment(comentDto commentDto) {
+	public Map<String, Object> insertComent(comentDto commentDto) {
 		System.out.println("insertComment");
 		Map<String, Object>map=new HashMap<>();
 		try {
@@ -27,14 +28,13 @@ public class commentService {
 			comentDao.insert(commentDto);
 			System.out.println("댓글 등록 성공");
 			map.put(flag, true);
-			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("insertComment error"+e.getMessage());
 			map.put(flag, false);
 			map.put("message", e.getMessage());
-			return map;
 		}
+		return map;
 	}
 	private void confrimInsert(comentDto commentDto) {
 		System.out.println("confrimInsert");
@@ -53,7 +53,7 @@ public class commentService {
 		}
 		throw new RuntimeException(message);
 	}
-	public Map<String, Object> updateComment(comentDto commentDto) {
+	public Map<String, Object> updateComent(comentDto commentDto) {
 		System.out.println("updateComment");
 		Map<String, Object>map=new HashMap<>();
 		try {
@@ -65,14 +65,13 @@ public class commentService {
 			utillService.deleteImage(originImages, updateImages, imgPath);
 			comentDao.update(commentDto);
 			map.put(flag, true);
-			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("updateComment error "+e.getMessage());
 			map.put(flag, false);
 			map.put("message", e.getMessage());
-			return map;
 		}
+		return map;
 		
 	}
 	private void confrimUpdate(comentDto comentDto,comentDto oriComentDto) {
@@ -88,5 +87,39 @@ public class commentService {
 			return;
 		}
 		throw new RuntimeException(message);
+	}
+	public Map<String, Object> deleteComent(comentDto comentDto) {
+		System.out.println("deleteComent");
+		Map<String, Object>map=new HashMap<>();
+		try {
+			comentDto origin=comentDao.findByCid(comentDto.getCid());
+			confrimDelete(comentDto, origin);
+			comentDao.delete(comentDto.getCid());
+			map.put(flag, true);
+			map.put(message, "댓글 삭제 성공");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("deleteComent");
+			map.put(flag,false);
+			map.put(message, e.getMessage());
+		}
+		return map;
+	}
+	private void confrimDelete(comentDto comentDto,comentDto origin) {
+		System.out.println("confrimDelete");
+		String message=null;
+		if(origin.getAid()==0) {
+			message="존재하지 않는 게시물 입니다";
+		}else if(origin.getCid()==0) {
+			message="존재 하지 않는 댓글입니다";
+		}else if(comentDto.getEmail()==null) {
+			message="로그인 후 사용부탁드립니다";
+		}else if(!origin.getEmail().equals(comentDto.getEmail())) {
+			message="작성자가 일치 하지 않습니다";
+		}else {
+			System.out.println("댓글 삭제 유효성 통과");
+			return;
+		}
+		throw new RuntimeException("로그인 후 시도해주세요");
 	}
 }

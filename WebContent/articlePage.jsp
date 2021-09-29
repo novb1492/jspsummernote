@@ -304,12 +304,17 @@ int totalpage=(Integer)map.get("totalPage");
 		  	if(c.getEmail().equals(email)){
 		  		%>
 		  		<input type="button" onclick="ready(<%=c.getCid()%>)" id="<%=c.getCid()%>ready" value="수정">	
-		  		<input type="button" onclick="deleteComment(<%=c.getCid()%>)"  value="삭제">	
 		  		<input type="submit"  id="<%=c.getCid()%>try"  value="확인" disabled="disabled">
+		  		</form>
+		  		<form action="deleteComent.jsp" method="get">
+		  		<input type="hidden" name=cid value="<%=c.getCid()%>">
+		  			<input type="hidden" name="aid" value="<%=c.getAid()%>"> 
+           			<input type="hidden" name="page" value="<%=nowPage%>"> 
+		  			<input type="submit"  value="삭제">	
+		  		</form>
 		  		<input type="button" onclick="cancle(<%=c.getCid()%>)" id="<%=c.getCid()%>cancle"  value="취소" disabled="disabled">
 		  	<%}
 		  %>
-			 </form>
          <br>
         <%}}
         %>
@@ -366,6 +371,7 @@ int totalpage=(Integer)map.get("totalPage");
 var originComment;
 var commentflag=false;
 var beforecid;
+
 function ready(cid) {
 	if(commentflag){
 		cancle(beforecid);

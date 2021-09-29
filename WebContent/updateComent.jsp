@@ -18,7 +18,7 @@ commentService commentService=new commentService();
 comentDto.setComment(coment);
 comentDto.setCid(cid);
 comentDto.setEmail(email);
-Map<String,Object>map= commentService.updateComment(comentDto);
+Map<String,Object>map= commentService.updateComent(comentDto);
 if((boolean)map.get(StringsEnums.flag.getString())==false){
 %>
 <script>

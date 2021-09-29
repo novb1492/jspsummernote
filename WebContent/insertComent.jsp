@@ -13,7 +13,7 @@ commentDto.setAid(aid);
 commentDto.setEmail((String)request.getSession().getAttribute("email"));
 commentDto.setComment(comment);
 commentService commentService=new commentService();
-Map<String,Object>map=commentService.insertComment(commentDto);
+Map<String,Object>map=commentService.insertComent(commentDto);
 if((boolean)map.get("flag")){
 	response.sendRedirect("articlePage.jsp?aid="+aid);
 }else{
