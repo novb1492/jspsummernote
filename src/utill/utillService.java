@@ -114,11 +114,4 @@ public class utillService {
 		System.out.println(fileName+" 이미지");
 		deletefile(imgPath+fileName);
 	}
-    public static boolean checkZero(int id) {
-    	System.out.println("checkZero");
-		if(id==0) {
-			return true;
-		}
-		return false;
-	}
 }

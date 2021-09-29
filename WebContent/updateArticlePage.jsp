@@ -22,8 +22,12 @@ Map<String,Object>map= boardService.selectAritcle(aid);
 boardDto boardDto=null;
 
 if((boolean)map.get(StringsEnums.flag.getString())==false){
-	response.sendRedirect("index.jsp");
-}else{
+%>
+<script>
+alert('<%=map.get("message")%>');
+location.href='index.jsp';
+</script>
+<%}else{
 	boardDto=(boardDto)map.get(StringsEnums.article.getString());
 }
 %>

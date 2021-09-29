@@ -21,7 +21,6 @@ import utill.utillService;
 
 public class boardService {
 	private	boardDao boardDao=new boardDao();
-	private commentService comentService=new commentService();
 	private final int pagesize=10;
 	private final int comentPagesize=10;
 	private final int titleLength=50;
@@ -32,6 +31,7 @@ public class boardService {
 	private final String end=StringsEnums.end.getString();
 	private final String article=StringsEnums.article.getString();
 	private final String coments=StringsEnums.coment.getString();
+	private final String message=StringsEnums.message.getString();
 	
 	public boardService() {
 		// TODO Auto-generated constructor stub
@@ -79,16 +79,25 @@ public class boardService {
 	}
 	public Map<String, Object> selectAllByPage(int nowPage,HttpServletRequest request ) {
 		System.out.println("selectAllByPage");
-		String searchTitle=Optional.ofNullable(request.getParameter("title")).orElseGet(()->null);
 		Map<String, Object>map=utillService.getPagingStartEnd(nowPage, pagesize);
-		List<boardDto>boardDtos=getList(searchTitle, map);
-		int totalPage=1;
-		if(boardDtos.size()>0) {
-			totalPage=utillService.getTotalpages(boardDtos.get(0).getTotalCount(), pagesize);
+		try {
+			String searchTitle=Optional.ofNullable(request.getParameter("title")).orElseGet(()->null);
+			List<boardDto>boardDtos=getList(searchTitle, map);
+			int totalPage=1;
+			if(boardDtos.size()>0) {
+				totalPage=utillService.getTotalpages(boardDtos.get(0).getTotalCount(), pagesize);
+			}
+			map.clear();
+			map.put(flag, true);
+			map.put("dtos", boardDtos);
+			map.put("totalpage", totalPage);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("selectAllByPage error "+e.getMessage());
+			map.put(flag, false);
+			map.put(message, e.getMessage());
 		}
-		map.clear();
-		map.put("dtos", boardDtos);
-		map.put("totalpage", totalPage);
+	
 		return map;
 	}
 	private List<boardDto> getList(String searchTitle,Map<String, Object> map) {
@@ -134,6 +143,24 @@ public class boardService {
 			return map;
 		}
 	}
+	public Map<String, Object> selectAritcle(int aid) {
+		System.out.println("selectAticle");
+		Map<String, Object>map=new HashMap<>();
+		try {
+			boardDto boardDto =boardDao.findByAid(aid);
+			if(boardDto.getId()==0) {
+				throw new RuntimeException("존재하지 않는 게시물입니다");
+			}
+			map.put(flag, true);
+			map.put(article, boardDto);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("selectAticle error"+e.getMessage());
+			map.put(flag, false);
+			map.put(message, e.getMessage());
+		}
+		return map;
+	}
 	public Map<String, Object> updateArticle(boardDto boardDto) {
 		System.out.println("updateArticle");
 		Map<String, Object>map=new HashMap<>();
@@ -159,7 +186,7 @@ public class boardService {
 	private void confrimUpdate(boardDto originDto,boardDto boardDto) {
 		System.out.println("confrimUpdate");
 		String message=null;
-		if(utillService.checkZero(originDto.getId())) {
+		if(originDto.getId()==0) {
 			message="존재하지 않는 게시글 입니다";
 		}else if(!originDto.getEmail().equals(boardDto.getEmail())) {
 			message="작성자가 일치 하지 않습니다";
@@ -197,7 +224,7 @@ public class boardService {
 	private void deleteConfrim(boardDto boardDto,String email) {
 		System.out.println("deleteConfrim");
 		String message=null;
-		if(utillService.checkZero(boardDto.getId())) {
+		if(boardDto.getId()==0) {
 			message="존재하지 않는 게시물입니다";
 		}else if(!boardDto.getEmail().equals(email)) {
 			message="작성자가 일치 하지 않습니다";

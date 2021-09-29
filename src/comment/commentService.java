@@ -12,7 +12,6 @@ import utill.utillService;
 public class commentService {
 	comentDao comentDao=new comentDao();
 	private final int maxLength=200;
-	private final int pagesize=10;
 	private final String imgPath="C:/java_folder/make/WebContent/static/image/";
 	private final String flag=StringsEnums.flag.getString();
 	private final String message=StringsEnums.message.getString();
@@ -77,7 +76,7 @@ public class commentService {
 	private void confrimUpdate(comentDto comentDto,comentDto oriComentDto) {
 		System.out.println("confrimUpdate");
 		String message=null;
-		if(utillService.checkZero(oriComentDto.getCid())) {
+		if(oriComentDto.getCid()==0) {
 			message="존재하지 않는 댓글입니다";
 		}else if(!comentDto.getEmail().equals(oriComentDto.getEmail())) {
 			message="작성자가 일치 하지 않습니다";
@@ -94,6 +93,10 @@ public class commentService {
 		try {
 			comentDto origin=comentDao.findByCid(comentDto.getCid());
 			confrimDelete(comentDto, origin);
+			List<String>imgs=utillService.getImgSrc(origin.getComment());
+			if(imgs.size()>0) {
+				utillService.deleteImage(imgs, imgPath);
+			}
 			comentDao.delete(comentDto.getCid());
 			map.put(flag, true);
 			map.put(message, "댓글 삭제 성공");
@@ -120,6 +123,6 @@ public class commentService {
 			System.out.println("댓글 삭제 유효성 통과");
 			return;
 		}
-		throw new RuntimeException("로그인 후 시도해주세요");
+		throw new RuntimeException(message);
 	}
 }
