@@ -217,9 +217,7 @@ httpSession.removeAttribute("text");
 
 
 							<div class="form-group has-feedback">
-								<textarea name="text" id="summernote" rows="20"
-									class="form-control input-block-level" style="display: none;">
-   		</textarea>
+								<textarea name="text" id="summernote" rows="20"class="form-control input-block-level" style="display: none;"></textarea>
 							</div>
 							<input type="hidden" name="textType" value="HTML" id="textType">
 
@@ -227,7 +225,7 @@ httpSession.removeAttribute("text");
 								<fieldset class="buttons">
 									<a href="index.jsp" class="btn btn-default btn-wide"
 										onclick="return confirm('정말로 취소하시겠습니까?')">취소</a> <input
-										type="submit" name="create"
+										type="button" name="create" onclick="doInsert()"
 										class="create btn btn-success btn-wide pull-right" value="등록"
 										id="create">
 								</fieldset>
@@ -274,12 +272,13 @@ httpSession.removeAttribute("text");
 			</div>
 		</div>
 		<%@ include file="footer.jsp"%>
-		<script>
+		<script src="/static/js/jslib.js"></script>
+<script>
 var requestUrl;
 var result;
-
 $(document).ready(function() {
   $('#summernote').summernote();
+  	
 });
 $('#summernote').summernote({
 				height: 300,                 // 에디터 높이
@@ -287,7 +286,7 @@ $('#summernote').summernote({
 				maxHeight: null,             // 최대 높이
 				focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
 				lang: "ko-KR",					// 한글 설정
-				placeholder: '최대 2048자까지 쓸 수 있습니다',	//placeholder 설정
+				placeholder: '최대 1000자까지 쓸 수 있습니다',	//placeholder 설정
 				callbacks: {	//여기 부분이 이미지를 첨부하는 부분
 					onImageUpload : function(files) {
                         for (var i = files.length - 1; i >= 0; i--) {

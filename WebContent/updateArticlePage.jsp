@@ -212,8 +212,7 @@ location.href='index.jsp';
 					</div>
 				</div>
 				<div class="panel-body">
-					<form action="updateArticle.jsp" method="post" id="article-form"
-						class="article-form" role="form" onsubmit="return postForm()">
+					<form action="updateArticle.jsp" method="post" id="article-form"class="article-form" role="form" onsubmit="return postForm()">
 						<fieldset class="form">
 							<input type="hidden" name="aid" value=<%=aid%>>
 							<div class="form-group has-feedback">
@@ -230,9 +229,7 @@ location.href='index.jsp';
 
 
 							<div class="form-group has-feedback">
-								<textarea name="text" id="summernote" rows="20"
-									class="form-control input-block-level" style="display: none;">
-   		</textarea>
+								<textarea name="text" id="summernote" rows="20"class="form-control input-block-level" style="display: none;"></textarea>
 							</div>
 							<input type="hidden" name="textType" value="HTML" id="textType">
 
@@ -240,7 +237,7 @@ location.href='index.jsp';
 								<fieldset class="buttons">
 									<a href="index.jsp" class="btn btn-default btn-wide"
 										onclick="return confirm('정말로 취소하시겠습니까?')">취소</a> <input
-										type="submit" name="create"
+										type="button" name="create" onclick="doInsert()"
 										class="create btn btn-success btn-wide pull-right" value="등록"
 										id="create">
 								</fieldset>

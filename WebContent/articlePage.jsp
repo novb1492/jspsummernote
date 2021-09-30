@@ -19,16 +19,12 @@ if(snowpage!=null){
 }
 boardService boardService=new boardService();
 Map<String,Object>map=boardService.selectAritcleJoinComent(aid,nowPage);
+
 if((boolean)map.get(StringsEnums.flag.getString())==false){
-%>
-<script>
-	alert('존재하지 않는 게시글입니다');
-	location.href='index.jsp';
-</script>
-<%}
+	response.sendRedirect("index.jsp");
+}
 boardDto boardDto=(boardDto)map.get(StringsEnums.article.getString());
 List<comentDto>comentDtos=(List<comentDto>)map.get(StringsEnums.coment.getString());
-System.out.print(comentDtos.isEmpty()+" "+comentDtos.get(0).getComment());
 int minuspage=nowPage-1;
 int pluspage=nowPage+1;
 int totalpage=(Integer)map.get("totalPage");
@@ -274,7 +270,7 @@ int totalpage=(Integer)map.get("totalPage");
 	                             <input type="submit" name="create" id="btn-create-btn" class="btn btn-success btn-wide" value="등록" placeholder="로그인후 작성해주세요" disabled="disabled">
 	                            <%}else{
 	                            	%>
-	                            	 <input type="submit" name="create" id="btn-create-btn" class="btn btn-success btn-wide" placeholder="최대 200자입니다" value="등록">
+	                            	 <input type="button" onclick="doInsertComent()" name="create" id="btn-create-btn" class="btn btn-success btn-wide" placeholder="최대 200자입니다" value="등록">
 	                            <%}
 	                            %>
 	                           
@@ -367,11 +363,11 @@ int totalpage=(Integer)map.get("totalPage");
                 <div id="footer" class="footer" role="contentinfo">
 
 <%@ include file="footer.jsp" %>
+<script src="/static/js/jslib.js"></script>
 <script type="text/javascript">
 var originComment;
 var commentflag=false;
 var beforecid;
-
 function ready(cid) {
 	if(commentflag){
 		cancle(beforecid);

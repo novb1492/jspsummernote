@@ -118,7 +118,7 @@ public class boardService {
 			map=utillService.getPagingStartEnd(nowPage, comentPagesize);
 			map=boardDao.findByAidJoinComment(aid,(int)map.get(start),(int)map.get(end));
 			boardDto boardDto=(boardDto)map.get(article);
-			if(boardDto.getTitle()==null) {
+			if(boardDto==null) {
 				System.out.println("존재하지 않는 게시글");
 				throw new RuntimeException("존재하지 않는 게시글");
 			}
@@ -139,7 +139,7 @@ public class boardService {
 			e.printStackTrace();
 			System.out.println("selectAritcle error"+e.getMessage());
 			map.put(flag,false);
-			map.put("messsage",  e.getMessage());
+			map.put(message,  e.getMessage());
 			return map;
 		}
 	}
